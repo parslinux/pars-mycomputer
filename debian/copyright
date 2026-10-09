@@ -1,11 +1,11 @@
 Format: http://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
-Upstream-Name: pardus-mycomputer
-Upstream-Contact: Fatih Altun <fatih.altun@pardus.org.tr>
-Source: https://github.com/pardus/pardus-mycomputer
+Upstream-Name: pars-mycomputer
+Upstream-Contact: Fatih Altun <fatih.altun@pars.org.tr>
+Source: https://github.com/pars/pars-mycomputer
 
 
 Files: *
-Copyright: 2023, Pardus <dev@pardus.org.tr>
+Copyright: 2026, Pars <dev@pars.org.tr>
 License: GPL-3.0+
 
 License: GPL-3.0+
@@ -24,5 +24,3 @@ License: GPL-3.0+
  .
  On Debian systems, the complete text of the GNU General
  Public License version 3 can be found in "/usr/share/common-licenses/GPL-3".
-
-

@@ -1,10 +1,10 @@
-# Pardus My Computer
+# Pars My Computer
 
-Pardus My Computer is an ui for information and management of disks on your computer.
+Pars My Computer is a modern UI for information and management of disks on your computer.
 
-It is currently a work in progress. Maintenance is done by <a href="https://www.pardus.org.tr/">Pardus</a> team.
+It is currently a work in progress. Maintenance is done by <a href="https://www.pars.org.tr/">Pars</a> team.
 
-[![Packaging status](https://repology.org/badge/vertical-allrepos/pardus-mycomputer.svg)](https://repology.org/project/pardus-mycomputer/versions)
+[![Packaging status](https://repology.org/badge/vertical-allrepos/pars-mycomputer.svg)](https://repology.org/project/pars-mycomputer/versions)
 
 ### **Dependencies**
 
@@ -22,12 +22,12 @@ sudo apt install gir1.2-glib-2.0 gir1.2-gtk-3.0 gir1.2-notify-0.7 gir1.2-pango-1
 
 Clone the repository
 ```bash
-git clone https://github.com/pardus/pardus-mycomputer.git ~/pardus-mycomputer
+git clone https://github.com/pars/pars-mycomputer.git ~/pars-mycomputer
 ```
 
 Run application
 ```bash
-python3 ~/pardus-mycomputer/src/Main.py
+python3 ~/pars-mycomputer/src/Main.py
 ```
 
 ### **Build deb package**
@@ -35,17 +35,17 @@ python3 ~/pardus-mycomputer/src/Main.py
 ```bash
 sudo apt install devscripts git-buildpackage
 sudo mk-build-deps -ir
-gbp buildpackage --git-export-dir=/tmp/build/pardus-mycomputer -us -uc
+gbp buildpackage --git-export-dir=/tmp/build/pars-mycomputer -us -uc
 ```
 
 ### **Screenshots**
 
-![Pardus My Computer 1](screenshots/pardus-mycomputer-1.png)
+![Pars My Computer 1](screenshots/pardus-mycomputer-1.png)
 
-![Pardus My Computer 2](screenshots/pardus-mycomputer-2.png)
+![Pars My Computer 2](screenshots/pardus-mycomputer-2.png)
 
-![Pardus My Computer 3](screenshots/pardus-mycomputer-3.png)
+![Pars My Computer 3](screenshots/pardus-mycomputer-3.png)
 
-![Pardus My Computer 4](screenshots/pardus-mycomputer-4.png)
+![Pars My Computer 4](screenshots/pardus-mycomputer-4.png)
 
-![Pardus My Computer 5](screenshots/pardus-mycomputer-5.png)
+![Pars My Computer 5](screenshots/pardus-mycomputer-5.png)

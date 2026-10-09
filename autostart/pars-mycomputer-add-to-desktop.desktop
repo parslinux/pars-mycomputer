@@ -1,0 +1,7 @@
+[Desktop Entry]
+Name=Pars My Computer Add to Desktop 
+Comment=Pars My Computer Add to Desktop
+Exec=/usr/bin/bash /usr/share/pars/pars-mycomputer/autostart/pars-mycomputer-add-to-desktop
+Icon=pars-mycomputer
+Type=Application
+X-GNOME-Autostart-enabled=true

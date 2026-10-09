@@ -5,20 +5,20 @@
 
 <policyconfig>
 
-<vendor>Pardus Developers</vendor>
-<vendor_url>https://www.pardus.org.tr</vendor_url>
+<vendor>Pars Developers</vendor>
+<vendor_url>https://www.pars.org.tr</vendor_url>
 
-  <action id="tr.org.pardus.pkexec.pardus-mycomputer-fstabwriter">
-    <description>Pardus My Computer Authentication</description>
-    <message>Authentication is required for Pardus My Computer</message>
-    <message xml:lang="tr">Pardus Bilgisayarım için yetkilendirme gerekiyor</message>
+  <action id="tr.org.pars.pkexec.pars-mycomputer-fstabwriter">
+    <description>Pars My Computer Authentication</description>
+    <message>Authentication is required for Pars My Computer</message>
+    <message xml:lang="tr">Pars Bilgisayarım için yetkilendirme gerekiyor</message>
     <icon_name>preferences-system</icon_name>
     <defaults>
       <allow_any>auth_admin</allow_any>
       <allow_inactive>auth_admin</allow_inactive>
       <allow_active>auth_admin</allow_active>
     </defaults>
-    <annotate key="org.freedesktop.policykit.exec.path">/usr/share/pardus/pardus-mycomputer/src/FstabWriter.py</annotate>
+    <annotate key="org.freedesktop.policykit.exec.path">/usr/share/pars/pars-mycomputer/src/FstabWriter.py</annotate>
     <annotate key="org.freedesktop.policykit.exec.allow_gui">true</annotate>
   </action>
 

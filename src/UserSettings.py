@@ -16,7 +16,7 @@ from pathlib import Path
 from gi.repository import GLib
 
 # Translation Constants:
-APPNAME = "pardus-mycomputer"
+APPNAME = "pars-mycomputer"
 TRANSLATIONS_PATH = "/usr/share/locale"
 # SYSTEM_LANGUAGE = os.environ.get("LANG")
 
@@ -29,15 +29,15 @@ locale.textdomain(APPNAME)
 
 class UserSettings(object):
     def __init__(self):
-        self.user_config_dir = Path.joinpath(Path(GLib.get_user_config_dir()), Path("pardus-mycomputer"))
+        self.user_config_dir = Path.joinpath(Path(GLib.get_user_config_dir()), Path("pars-mycomputer"))
         if not Path(self.user_config_dir).exists():
-            self.user_config_dir = Path.joinpath(Path(GLib.get_user_config_dir()), Path("pardus/pardus-mycomputer"))
+            self.user_config_dir = Path.joinpath(Path(GLib.get_user_config_dir()), Path("pars/pars-mycomputer"))
         self.user_config_file = Path.joinpath(self.user_config_dir, Path("settings.ini"))
         self.user_recent_servers_file = Path.joinpath(self.user_config_dir, Path("servers-recent"))
         self.user_saved_servers_file = Path.joinpath(self.user_config_dir, Path("servers-saved"))
         self.user_saved_places_file = Path.joinpath(self.user_config_dir, Path("places-saved"))
 
-        self.desktop_file = "tr.org.pardus.mycomputer.desktop"
+        self.desktop_file = "tr.org.pars.mycomputer.desktop"
 
         self.config = configparser.ConfigParser(strict=False)
 
@@ -49,6 +49,7 @@ class UserSettings(object):
         self.config_autorefresh_time = None
         self.config_hide_places = None
         self.config_hide_desktopicon = None
+        self.config_file_manager = None
 
         # window configs
         self.config_window_remember_size = None
@@ -65,6 +66,7 @@ class UserSettings(object):
         self.default_autorefresh_time = 1.5
         self.default_hide_places = False
         self.default_hide_desktopicon = False
+        self.default_file_manager = "xdg-open"
 
         # window defaults
         self.default_window_remember_size = False
@@ -81,7 +83,8 @@ class UserSettings(object):
             'AutoRefresh': self.default_autorefresh,
             'AutoRefreshTime': self.default_autorefresh_time,
             'HidePlaces': self.default_hide_places,
-            'HideDesktopIcon': self.default_hide_desktopicon
+            'HideDesktopIcon': self.default_hide_desktopicon,
+            'FileManager': self.default_file_manager
         }
 
         self.config['WINDOW'] = {
@@ -107,6 +110,10 @@ class UserSettings(object):
             self.config_autorefresh_time = self.config.getfloat('MAIN', 'AutoRefreshTime')
             self.config_hide_places = self.config.getboolean('MAIN', 'HidePlaces')
             self.config_hide_desktopicon = self.config.getboolean('MAIN', 'HideDesktopIcon')
+            try:
+                self.config_file_manager = self.config.get('MAIN', 'FileManager')
+            except Exception:
+                self.config_file_manager = self.default_file_manager
             self.config_window_remember_size = self.config.getboolean('WINDOW', 'RememberWindowSize')
             self.config_window_fullscreen = self.config.getboolean('WINDOW', 'FullScreen')
             self.config_window_width = self.config.getint('WINDOW', 'Width')
@@ -124,6 +131,7 @@ class UserSettings(object):
             self.config_autorefresh_time = self.default_autorefresh_time
             self.config_hide_places = self.default_hide_places
             self.config_hide_desktopicon = self.default_hide_desktopicon
+            self.config_file_manager = self.default_file_manager
             self.config_window_remember_size = self.default_window_remember_size
             self.config_window_fullscreen = self.default_window_fullscreen
             self.config_window_width = self.default_window_width
@@ -136,7 +144,7 @@ class UserSettings(object):
 
     def writeConfig(self, closeappmain="", closeapphdd="", closeappusb="", autorefresh="", autorefreshtime="",
                     hideplaces="", hidedesktopicon="", rememberwindowsize="", fullscreen="",
-                    width="", height="", usedarktheme=""):
+                    width="", height="", usedarktheme="", filemanager=""):
         if closeappmain == "":
             closeappmain = self.config_closeapp_main
         if closeapphdd == "":
@@ -161,6 +169,8 @@ class UserSettings(object):
             height = self.config_window_height
         if usedarktheme == "":
             usedarktheme = self.config_window_use_darktheme
+        if filemanager == "":
+            filemanager = self.config_file_manager or self.default_file_manager
 
         self.config['MAIN'] = {
             'CloseAppMain': closeappmain,
@@ -169,7 +179,8 @@ class UserSettings(object):
             'AutoRefresh': autorefresh,
             'AutoRefreshTime': autorefreshtime,
             'HidePlaces': hideplaces,
-            'HideDesktopIcon': hidedesktopicon
+            'HideDesktopIcon': hidedesktopicon,
+            'FileManager': filemanager
         }
 
         self.config['WINDOW'] = {
@@ -352,8 +363,12 @@ class UserSettings(object):
                         f.write("{}\n".format(place))
 
     def set_hide_desktopicon(self, state):
+        script_path = "/usr/share/pars/pars-mycomputer/autostart/pars-mycomputer-add-to-desktop"
+        if not os.path.exists(script_path):
+            script_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "../autostart/pars-mycomputer-add-to-desktop"))
+
         if state:
-            subprocess.call(["/usr/share/pardus/pardus-mycomputer/autostart/pardus-mycomputer-add-to-desktop"])
+            subprocess.call([script_path])
             if os.path.exists(os.path.join(GLib.get_user_special_dir(GLib.UserDirectory.DIRECTORY_DESKTOP),
                                            self.desktop_file)):
                 os.remove(os.path.join(GLib.get_user_special_dir(GLib.UserDirectory.DIRECTORY_DESKTOP),
@@ -362,4 +377,4 @@ class UserSettings(object):
             if Path.joinpath(self.user_config_dir, Path("desktop")).exists():
                 Path.joinpath(self.user_config_dir, Path("desktop")).unlink(missing_ok=True)
 
-            subprocess.call(["/usr/share/pardus/pardus-mycomputer/autostart/pardus-mycomputer-add-to-desktop"])
+            subprocess.call([script_path])

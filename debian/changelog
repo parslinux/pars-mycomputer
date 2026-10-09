@@ -1,19 +1,19 @@
-pardus-mycomputer (0.8.2) unstable; urgency=medium
+pars-mycomputer (0.8.2) unstable; urgency=medium
 
   * Add backward compatibility for GioUnix operations
 
- -- Fatih Altun <fatih.altun@pardus.org.tr>  Wed, 30 Sep 2026 20:41:25 +0300
+ -- Fatih Altun <fatih.altun@pars.org.tr>  Wed, 30 Sep 2026 20:41:25 +0300
 
-pardus-mycomputer (0.8.1) unstable; urgency=medium
+pars-mycomputer (0.8.1) unstable; urgency=medium
 
   * Fix race condition vulnerability in set_automounted and harden fstab updates
   * Add policy file
   * Add FstabWriter and policy to setup.py
   * Fix fstab automount state handling on ui
 
- -- Fatih Altun <fatih.altun@pardus.org.tr>  Tue, 22 Sep 2026 01:14:37 +0300
+ -- Fatih Altun <fatih.altun@pars.org.tr>  Tue, 22 Sep 2026 01:14:37 +0300
 
-pardus-mycomputer (0.8.0) unstable; urgency=medium
+pars-mycomputer (0.8.0) unstable; urgency=medium
 
   [ wraith4081 ]
   * FIX: Arbitrary Code Injection in the saved places
@@ -38,21 +38,21 @@ pardus-mycomputer (0.8.0) unstable; urgency=medium
   [ Fatih Altun ]
   * Update French translations for various strings
 
- -- Fatih Altun <fatih.altun@pardus.org.tr>  Fri, 06 Mar 2026 14:32:15 +0300
+ -- Fatih Altun <fatih.altun@pars.org.tr>  Fri, 06 Mar 2026 14:32:15 +0300
 
-pardus-mycomputer (0.7.5) unstable; urgency=medium
+pars-mycomputer (0.7.5) unstable; urgency=medium
 
   * Update app icon
 
- -- Fatih Altun <fatih.altun@pardus.org.tr>  Mon, 24 Nov 2025 12:39:06 +0300
+ -- Fatih Altun <fatih.altun@pars.org.tr>  Mon, 24 Nov 2025 12:39:06 +0300
 
-pardus-mycomputer (0.7.4) unstable; urgency=medium
+pars-mycomputer (0.7.4) unstable; urgency=medium
 
   * Update missing emblem-ok-symbolic
 
- -- Fatih Altun <fatih.altun@pardus.org.tr>  Sun, 23 Nov 2025 23:02:55 +0300
+ -- Fatih Altun <fatih.altun@pars.org.tr>  Sun, 23 Nov 2025 23:02:55 +0300
 
-pardus-mycomputer (0.7.3) unstable; urgency=medium
+pars-mycomputer (0.7.3) unstable; urgency=medium
 
   * Update headerbar menu location, icon and mv refresh to menu
   * Update left side spaces
@@ -60,9 +60,9 @@ pardus-mycomputer (0.7.3) unstable; urgency=medium
   * Update maintainer
   * Update listbox radius
 
- -- Fatih Altun <fatih.altun@pardus.org.tr>  Sun, 23 Nov 2025 22:57:37 +0300
+ -- Fatih Altun <fatih.altun@pars.org.tr>  Sun, 23 Nov 2025 22:57:37 +0300
 
-pardus-mycomputer (0.7.2) unstable; urgency=medium
+pars-mycomputer (0.7.2) unstable; urgency=medium
 
   * Fix subprocess on get_file_info func
   * Add exception to subprocess
@@ -70,9 +70,9 @@ pardus-mycomputer (0.7.2) unstable; urgency=medium
   * Reformat DiskManager.py
   * Reformat code
 
- -- Fatih Altun <fatih.altun@pardus.org.tr>  Fri, 27 Dec 2024 21:50:54 +0300
+ -- Fatih Altun <fatih.altun@pars.org.tr>  Fri, 27 Dec 2024 21:50:54 +0300
 
-pardus-mycomputer (0.7.1) unstable; urgency=medium
+pars-mycomputer (0.7.1) unstable; urgency=medium
 
   [ Hugo Carvalho ]
   * Update Portuguese translations
@@ -80,9 +80,9 @@ pardus-mycomputer (0.7.1) unstable; urgency=medium
   [ Fatih Altun ]
   * Update copyright
 
- -- Fatih Altun <fatih.altun@pardus.org.tr>  Thu, 28 Nov 2024 17:11:42 +0300
+ -- Fatih Altun <fatih.altun@pars.org.tr>  Thu, 28 Nov 2024 17:11:42 +0300
 
-pardus-mycomputer (0.7.0) unstable; urgency=medium
+pars-mycomputer (0.7.0) unstable; urgency=medium
 
   [ bariscodefx ]
   * ported xfce about dialog fix from pardus-software
@@ -117,20 +117,20 @@ pardus-mycomputer (0.7.0) unstable; urgency=medium
   [ Hugo Carvalho ]
   * Update Portuguese translations
 
- -- Fatih Altun <fatih.altun@pardus.org.tr>  Tue, 16 Jul 2024 12:31:34 +0300
+ -- Fatih Altun <fatih.altun@pars.org.tr>  Tue, 16 Jul 2024 12:31:34 +0300
 
-pardus-mycomputer (0.6.3) unstable; urgency=medium
+pars-mycomputer (0.6.3) unstable; urgency=medium
 
   [ Sabri Ünal ]
   * data: Update Turkish translation
 
   [ Fatih Altun ]
-  * Add pardus-mycomputer-emblem-pardus-symbolic
+  * Add pars-mycomputer-emblem-pardus-symbolic
   * Add missing icon to setup.py
 
- -- Fatih Altun <fatih.altun@pardus.org.tr>  Mon, 28 Aug 2023 18:22:10 +0300
+ -- Fatih Altun <fatih.altun@pars.org.tr>  Mon, 28 Aug 2023 18:22:10 +0300
 
-pardus-mycomputer (0.6.2) unstable; urgency=medium
+pars-mycomputer (0.6.2) unstable; urgency=medium
 
   * Update README.md
   * Add new category to desktop file for xfce settings
@@ -142,9 +142,9 @@ pardus-mycomputer (0.6.2) unstable; urgency=medium
   * Update debian standards
   * Update about labels
 
- -- Fatih Altun <fatih.altun@pardus.org.tr>  Sun, 20 Aug 2023 23:35:56 +0300
+ -- Fatih Altun <fatih.altun@pars.org.tr>  Sun, 20 Aug 2023 23:35:56 +0300
 
-pardus-mycomputer (0.6.1) unstable; urgency=medium
+pars-mycomputer (0.6.1) unstable; urgency=medium
 
   [ Fatih Altun ]
   * Fix display name of hard drives
@@ -157,9 +157,9 @@ pardus-mycomputer (0.6.1) unstable; urgency=medium
   * Update screenshots
   * Update README.md
 
- -- Fatih Altun <fatih.altun@pardus.org.tr>  Sat, 28 Jan 2023 01:10:20 +0300
+ -- Fatih Altun <fatih.altun@pars.org.tr>  Sat, 28 Jan 2023 01:10:20 +0300
 
-pardus-mycomputer (0.6.0) unstable; urgency=medium
+pars-mycomputer (0.6.0) unstable; urgency=medium
 
   [ Fatih Altun ]
   * Add support for non-local files to new shortcut place
@@ -182,9 +182,9 @@ pardus-mycomputer (0.6.0) unstable; urgency=medium
   * Update pot file
   * Update Turkish translations
 
- -- Fatih Altun <fatih.altun@pardus.org.tr>  Wed, 18 Jan 2023 17:38:01 +0300
+ -- Fatih Altun <fatih.altun@pars.org.tr>  Wed, 18 Jan 2023 17:38:01 +0300
 
-pardus-mycomputer (0.5.0) unstable; urgency=medium
+pars-mycomputer (0.5.0) unstable; urgency=medium
 
   * Add place remove and add buttons to Places section
   * Add drag_n_drop for add place and add tooltip to places
@@ -210,18 +210,18 @@ pardus-mycomputer (0.5.0) unstable; urgency=medium
   * Update pot file
   * Update Turkish translations
 
- -- Fatih Altun <fatih.altun@pardus.org.tr>  Fri, 13 Jan 2023 11:33:27 +0300
+ -- Fatih Altun <fatih.altun@pars.org.tr>  Fri, 13 Jan 2023 11:33:27 +0300
 
-pardus-mycomputer (0.4.1) unstable; urgency=medium
+pars-mycomputer (0.4.1) unstable; urgency=medium
 
   * Add middle ellipsize to mount paths
   * Update app settings button ui
   * Update pot file
   * Update Turkish translations
 
- -- Fatih Altun <fatih.altun@pardus.org.tr>  Tue, 03 Jan 2023 18:42:19 +0300
+ -- Fatih Altun <fatih.altun@pars.org.tr>  Tue, 03 Jan 2023 18:42:19 +0300
 
-pardus-mycomputer (0.4.0) unstable; urgency=medium
+pars-mycomputer (0.4.0) unstable; urgency=medium
 
   [ Hugo Carvalho ]
   * Update Portuguese translations
@@ -236,9 +236,9 @@ pardus-mycomputer (0.4.0) unstable; urgency=medium
   * Update copyright year to 2023
   * Update window destroy events and controls
 
- -- Fatih Altun <fatih.altun@pardus.org.tr>  Fri, 30 Dec 2022 16:57:21 +0300
+ -- Fatih Altun <fatih.altun@pars.org.tr>  Fri, 30 Dec 2022 16:57:21 +0300
 
-pardus-mycomputer (0.3.1) unstable; urgency=medium
+pars-mycomputer (0.3.1) unstable; urgency=medium
 
   [ Fatih Altun ]
   * Update screenshots
@@ -256,9 +256,9 @@ pardus-mycomputer (0.3.1) unstable; urgency=medium
   * Update pt.po file
   * Update Turkish translations
 
- -- Fatih Altun <fatih.altun@pardus.org.tr>  Tue, 06 Dec 2022 11:46:27 +0300
+ -- Fatih Altun <fatih.altun@pars.org.tr>  Tue, 06 Dec 2022 11:46:27 +0300
 
-pardus-mycomputer (0.3.0) unstable; urgency=medium
+pars-mycomputer (0.3.0) unstable; urgency=medium
 
   [ Hakan Dündar ]
   * Visual improvements for main menu of the application
@@ -321,9 +321,9 @@ pardus-mycomputer (0.3.0) unstable; urgency=medium
   * Add pt to update-translations script
   * Update pt.po file
 
- -- Fatih Altun <fatih.altun@pardus.org.tr>  Thu, 24 Nov 2022 13:09:51 +0300
+ -- Fatih Altun <fatih.altun@pars.org.tr>  Thu, 24 Nov 2022 13:09:51 +0300
 
-pardus-mycomputer (0.2.0) unstable; urgency=medium
+pars-mycomputer (0.2.0) unstable; urgency=medium
 
   * Add unmount option to hard drives too
   * Add refresh button
@@ -336,11 +336,11 @@ pardus-mycomputer (0.2.0) unstable; urgency=medium
   * Add control for autorefresh glib id
   * Fix redundant widget warning
   * Add refresh tooltip and translations
-  * Add +x to pardus-mycomputer-add-to-desktop
+  * Add +x to pars-mycomputer-add-to-desktop
 
- -- Fatih Altun <fatih.altun@pardus.org.tr>  Fri, 04 Nov 2022 22:22:57 +0300
+ -- Fatih Altun <fatih.altun@pars.org.tr>  Fri, 04 Nov 2022 22:22:57 +0300
 
-pardus-mycomputer (0.1.1) unstable; urgency=medium
+pars-mycomputer (0.1.1) unstable; urgency=medium
 
   * Add screenshots
   * Update README
@@ -349,9 +349,9 @@ pardus-mycomputer (0.1.1) unstable; urgency=medium
   * Add get version from __version__
   * Update about pardus icon
 
- -- Fatih Altun <fatih.altun@pardus.org.tr>  Wed, 26 Oct 2022 16:27:01 +0300
+ -- Fatih Altun <fatih.altun@pars.org.tr>  Wed, 26 Oct 2022 16:27:01 +0300
 
-pardus-mycomputer (0.1.0) unstable; urgency=medium
+pars-mycomputer (0.1.0) unstable; urgency=medium
 
   [ Emin Fedar ]
   * Initial commit
@@ -407,4 +407,4 @@ pardus-mycomputer (0.1.0) unstable; urgency=medium
   * Add progressbar 0.9 usage control for other volumes too
   * Update maintainer, web
 
- -- Fatih Altun <fatih.altun@pardus.org.tr>  Fri, 21 Oct 2022 16:18:41 +0300
+ -- Fatih Altun <fatih.altun@pars.org.tr>  Fri, 21 Oct 2022 16:18:41 +0300

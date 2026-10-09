@@ -15,7 +15,7 @@ def create_mo_files():
             lang = po[:-3]
             local_dir = os.path.join(podir, lang, "LC_MESSAGES")
             os.makedirs(local_dir, exist_ok=True)
-            mo_file = os.path.join(local_dir, "pardus-mycomputer.mo")
+            mo_file = os.path.join(local_dir, "pars-mycomputer.mo")
 
             subprocess.call(["msgfmt", os.path.join(podir, po), "-o", mo_file])
             mo.append((f"/usr/share/locale/{lang}/LC_MESSAGES", [mo_file]))
@@ -36,10 +36,10 @@ if os.path.exists(changelog):
 
 data_files = [
                  ("/usr/share/applications/",
-                  ["tr.org.pardus.mycomputer.desktop"]),
-                 ("/usr/share/pardus/pardus-mycomputer/",
-                  ["pardus-mycomputer.svg"]),
-                 ("/usr/share/pardus/pardus-mycomputer/src", [
+                  ["tr.org.pars.mycomputer.desktop"]),
+                 ("/usr/share/pars/pars-mycomputer/",
+                  ["pars-mycomputer.svg"]),
+                 ("/usr/share/pars/pars-mycomputer/src", [
                      "src/Main.py",
                      "src/MainWindow.py",
                      "src/DiskManager.py",
@@ -48,35 +48,35 @@ data_files = [
                      "src/UserSettings.py",
                      "src/__version__"
                  ]),
-                 ("/usr/share/pardus/pardus-mycomputer/ui",
+                 ("/usr/share/pars/pars-mycomputer/ui",
                   ["ui/MainWindow.glade"]),
-                 ("/usr/share/pardus/pardus-mycomputer/autostart/",
-                  ["autostart/pardus-mycomputer-add-to-desktop"]),
-                 ("/usr/share/pardus/pardus-mycomputer/css/",
+                 ("/usr/share/pars/pars-mycomputer/autostart/",
+                  ["autostart/pars-mycomputer-add-to-desktop"]),
+                 ("/usr/share/pars/pars-mycomputer/css/",
                   ["css/style.css"]),
                  ("/etc/xdg/autostart",
-                  ["autostart/pardus-mycomputer-add-to-desktop.desktop"]),
+                  ["autostart/pars-mycomputer-add-to-desktop.desktop"]),
                  ("/usr/bin/",
-                  ["pardus-mycomputer"]),
+                  ["pars-mycomputer"]),
                  ("/usr/share/icons/hicolor/scalable/apps/", [
-                     "pardus-mycomputer.svg",
-                     "pardus-mycomputer-emblem-pardus-symbolic.svg"
+                     "pars-mycomputer.svg",
+                     "pars-mycomputer-emblem-pars-symbolic.svg"
                  ]),
                  ("/usr/share/polkit-1/actions",
-                  ["tr.org.pardus.pkexec.pardus-mycomputer.policy"])
+                  ["tr.org.pars.pkexec.pars-mycomputer.policy"])
              ] + create_mo_files()
 
 setup(
-    name="pardus-mycomputer",
+    name="pars-mycomputer",
     version="0.1.0",
     packages=find_packages(),
-    scripts=["pardus-mycomputer"],
+    scripts=["pars-mycomputer"],
     install_requires=["PyGObject"],
     data_files=data_files,
-    author="Pardus Altyapı",
-    author_email="dev@pardus.org.tr",
+    author="Pars Altyapı",
+    author_email="dev@pars.org.tr",
     description="My Computer, UI for information and management of disks on your computer.",
     license="GPLv3",
     keywords="",
-    url="https://www.pardus.org.tr",
+    url="https://www.pars.org.tr",
 )

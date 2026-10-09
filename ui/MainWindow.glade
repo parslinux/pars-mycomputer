@@ -12,7 +12,7 @@
   <object class="GtkMessageDialog" id="dialog_mount_error">
     <property name="can-focus">False</property>
     <property name="resizable">False</property>
-    <property name="icon-name">pardus-mycomputer</property>
+    <property name="icon-name">pars-mycomputer</property>
     <property name="type-hint">dialog</property>
     <property name="message-type">error</property>
     <property name="buttons">cancel</property>
@@ -244,7 +244,7 @@
                   <object class="GtkImage" id="img_os_menu">
                     <property name="visible">True</property>
                     <property name="can-focus">False</property>
-                    <property name="icon-name">emblem-pardus-symbolic</property>
+                    <property name="icon-name">emblem-pars-symbolic</property>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -256,7 +256,7 @@
                   <object class="GtkLabel" id="lbl_os_menu">
                     <property name="visible">True</property>
                     <property name="can-focus">False</property>
-                    <property name="label" translatable="yes">About Pardus</property>
+                    <property name="label" translatable="yes">About Pars</property>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -653,7 +653,7 @@
                         <property name="selection-mode">none</property>
                         <signal name="row-activated" handler="on_lb_icons_row_activated" swapped="no"/>
                         <style>
-                          <class name="pardus-mycomputer-listbox"/>
+                          <class name="pars-mycomputer-listbox"/>
                         </style>
                       </object>
                       <packing>
@@ -1621,19 +1621,19 @@
   <object class="GtkAboutDialog" id="dialog_about">
     <property name="can-focus">False</property>
     <property name="window-position">center-on-parent</property>
-    <property name="icon-name">pardus-mycomputer</property>
+    <property name="icon-name">pars-mycomputer</property>
     <property name="type-hint">dialog</property>
     <property name="transient-for">window</property>
-    <property name="program-name">Pardus My Computer</property>
+    <property name="program-name">Pars My Computer</property>
     <property name="version">0.1.0</property>
-    <property name="copyright">© TÜBİTAK BİLGEM</property>
+    <property name="copyright">© Pars Project Contributors</property>
     <property name="comments" translatable="yes">UI for information and management of disks on your computer.</property>
-    <property name="website">https://github.com/pardus/pardus-mycomputer</property>
-    <property name="authors">Emin Fedar &lt;emin.fedar@pardus.org.tr&gt;
-Fatih Altun &lt;fatih.altun@pardus.org.tr&gt;</property>
+    <property name="website">https://github.com/pars-linux/pars-mycomputer</property>
+    <property name="authors">Emin Fedar &lt;emin.fedar@pars.org.tr&gt;
+Fatih Altun &lt;fatih.altun@pars.org.tr&gt;</property>
     <property name="translator-credits" translatable="yes" comments="Name Surname &lt;example@examplemail.com&gt;">translator-credits</property>
-    <property name="artists">Yusuf Düzgün &lt;yusuf.duzgun@pardus.org.tr&gt;</property>
-    <property name="logo-icon-name">pardus-mycomputer</property>
+    <property name="artists">Yusuf Düzgün &lt;yusuf.duzgun@pars.org.tr&gt;</property>
+    <property name="logo-icon-name">pars-mycomputer</property>
     <property name="license-type">gpl-3-0</property>
     <child internal-child="vbox">
       <object class="GtkBox">
@@ -1723,7 +1723,7 @@ Fatih Altun &lt;fatih.altun@pardus.org.tr&gt;</property>
     <property name="can-focus">False</property>
     <property name="resizable">False</property>
     <property name="window-position">center-on-parent</property>
-    <property name="icon-name">pardus-mycomputer</property>
+    <property name="icon-name">pars-mycomputer</property>
     <property name="type-hint">dialog</property>
     <property name="gravity">center</property>
     <property name="transient-for">window</property>
@@ -2488,7 +2488,7 @@ Fatih Altun &lt;fatih.altun@pardus.org.tr&gt;</property>
   <object class="GtkApplicationWindow" id="window">
     <property name="can-focus">False</property>
     <property name="window-position">center</property>
-    <property name="icon-name">pardus-mycomputer</property>
+    <property name="icon-name">pars-mycomputer</property>
     <property name="gravity">center</property>
     <signal name="delete-event" handler="on_window_delete_event" swapped="no"/>
     <signal name="show" handler="on_window_show" swapped="no"/>
@@ -2552,7 +2552,7 @@ Fatih Altun &lt;fatih.altun@pardus.org.tr&gt;</property>
                         <property name="visible">True</property>
                         <property name="can-focus">False</property>
                         <property name="valign">center</property>
-                        <property name="icon-name">start-pardus</property>
+                        <property name="icon-name">start-pars</property>
                       </object>
                       <packing>
                         <property name="expand">False</property>
@@ -2565,7 +2565,7 @@ Fatih Altun &lt;fatih.altun@pardus.org.tr&gt;</property>
                         <property name="visible">True</property>
                         <property name="can-focus">False</property>
                         <property name="halign">start</property>
-                        <property name="label">Pardus</property>
+                        <property name="label">Pars</property>
                         <attributes>
                           <attribute name="weight" value="bold"/>
                           <attribute name="scale" value="1.2"/>
@@ -2712,7 +2712,7 @@ Fatih Altun &lt;fatih.altun@pardus.org.tr&gt;</property>
                           </object>
                         </child>
                         <style>
-                          <class name="pardus-mycomputer-listbox"/>
+                          <class name="pars-mycomputer-listbox"/>
                         </style>
                       </object>
                       <packing>
@@ -2883,7 +2883,7 @@ Fatih Altun &lt;fatih.altun@pardus.org.tr&gt;</property>
                           </object>
                         </child>
                         <style>
-                          <class name="pardus-mycomputer-listbox"/>
+                          <class name="pars-mycomputer-listbox"/>
                         </style>
                       </object>
                       <packing>
@@ -2905,7 +2905,7 @@ Fatih Altun &lt;fatih.altun@pardus.org.tr&gt;</property>
                     <property name="can-focus">False</property>
                     <property name="margin-top">8</property>
                     <property name="margin-bottom">8</property>
-                    <property name="label">© TÜBİTAK BİLGEM</property>
+                    <property name="label">© Pars Project</property>
                     <attributes>
                       <attribute name="weight" value="thin"/>
                     </attributes>

@@ -1,12 +1,12 @@
 #!/bin/bash
 
 user_desktop=`xdg-user-dir DESKTOP`
-user_desktop_file="$user_desktop/tr.org.pardus.mycomputer.desktop"
-root_desktop_file="/usr/share/applications/tr.org.pardus.mycomputer.desktop"
+user_desktop_file="$user_desktop/tr.org.pars.mycomputer.desktop"
+root_desktop_file="/usr/share/applications/tr.org.pars.mycomputer.desktop"
 
-config_dir="$HOME/.config/pardus-mycomputer"
+config_dir="$HOME/.config/pars-mycomputer"
 if ! [[ -d "$config_dir" ]]; then
-  config_dir="$HOME/.config/pardus/pardus-mycomputer"
+  config_dir="$HOME/.config/pars/pars-mycomputer"
 fi
 config_file="$config_dir/desktop"
 

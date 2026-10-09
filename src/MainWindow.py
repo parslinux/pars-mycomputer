@@ -18,7 +18,7 @@ import locale
 from locale import gettext as _
 
 # Translation Constants:
-APPNAME = "pardus-mycomputer"
+APPNAME = "pars-mycomputer"
 TRANSLATIONS_PATH = "/usr/share/locale"
 # SYSTEM_LANGUAGE = os.environ.get("LANG")
 
@@ -149,7 +149,7 @@ class MainWindow:
         self.img_os = UI("img_os")
         self.lbl_os_menu = UI("lbl_os_menu")
         self.img_os_menu = UI("img_os_menu")
-        self.menu_aboutpardus = UI("menu_aboutpardus")
+        self.menu_aboutpars = UI("menu_aboutpardus")
 
         # Drives
         self.box_drives = UI("box_drives")
@@ -230,12 +230,12 @@ class MainWindow:
 
         # About dialog
         self.dialog_about = UI("dialog_about")
-        self.dialog_about.set_program_name(_("Pardus My Computer"))
+        self.dialog_about.set_program_name(_("Pars My Computer"))
         if self.dialog_about.get_titlebar() is None:
             about_headerbar = Gtk.HeaderBar.new()
             about_headerbar.set_show_close_button(True)
-            about_headerbar.set_title(_("About Pardus My Computer"))
-            about_headerbar.pack_start(Gtk.Image.new_from_icon_name("pardus-mycomputer", Gtk.IconSize.LARGE_TOOLBAR))
+            about_headerbar.set_title(_("About Pars My Computer"))
+            about_headerbar.pack_start(Gtk.Image.new_from_icon_name("pars-mycomputer", Gtk.IconSize.LARGE_TOOLBAR))
             about_headerbar.show_all()
             self.dialog_about.set_titlebar(about_headerbar)
 
@@ -275,7 +275,10 @@ class MainWindow:
             print("{} {}".format("Desktop file copying to",
                                  GLib.get_user_special_dir(GLib.UserDirectory.DIRECTORY_DESKTOP)))
             try:
-                subprocess.call(["/usr/share/pardus/pardus-mycomputer/autostart/pardus-mycomputer-add-to-desktop"])
+                script_path = "/usr/share/pars/pars-mycomputer/autostart/pars-mycomputer-add-to-desktop"
+                if not os.path.exists(script_path):
+                    script_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "../autostart/pars-mycomputer-add-to-desktop"))
+                subprocess.call([script_path])
             except Exception as e:
                 print("{}".format(e))
 
@@ -340,25 +343,27 @@ class MainWindow:
             print("/etc/os-release file not found")
             os_name = _("Unknown (/etc/os-release file not exists)")
 
-        if os_id == "pardus":
-            self.img_os.set_from_icon_name("pardus-mycomputer-emblem-pardus-symbolic", Gtk.IconSize.BUTTON)
-            self.img_os_menu.set_from_icon_name("pardus-mycomputer-emblem-pardus-symbolic", Gtk.IconSize.BUTTON)
-            self.lbl_os_menu.set_label("{}".format(_("About Pardus")))
+        if os_id == "pars" or os_id == "pardus":
+            self.img_os.set_from_icon_name("pars-mycomputer-emblem-pars-symbolic", Gtk.IconSize.BUTTON)
+            self.img_os_menu.set_from_icon_name("pars-mycomputer-emblem-pars-symbolic", Gtk.IconSize.BUTTON)
+            self.lbl_os_menu.set_label("{}".format(_("About Pars")))
         else:
-            try:
-                pixbuf = Gtk.IconTheme.get_default().load_icon("emblem-{}".format(os_id), 16,
-                                                               Gtk.IconLookupFlags(16))
-            except Exception as e:
-                print("{}".format(e))
+            icon_candidates = [
+                f"emblem-{os_id}",
+                f"{os_id}-logo",
+                f"{os_id}linux-logo",
+                f"distributor-logo-{os_id}",
+                "distributor-logo",
+                "computer-symbolic",
+                "image-missing"
+            ]
+            for icon_name in icon_candidates:
                 try:
-                    pixbuf = Gtk.IconTheme.get_default().load_icon("distributor-logo", 16, Gtk.IconLookupFlags(16))
-                except Exception as e:
-                    print("{}".format(e))
-                    try:
-                        pixbuf = Gtk.IconTheme.get_default().load_icon("image-missing", 16, Gtk.IconLookupFlags(16))
-                    except Exception as e:
-                        print("{}".format(e))
-                        pixbuf = None
+                    pixbuf = Gtk.IconTheme.get_default().load_icon(icon_name, 16, Gtk.IconLookupFlags(16))
+                    if pixbuf is not None:
+                        break
+                except Exception:
+                    continue
 
             if pixbuf is not None:
                 self.img_os.set_from_pixbuf(pixbuf)
@@ -379,16 +384,17 @@ class MainWindow:
         h = 1080
         try:
             display = Gdk.Display.get_default()
-            monitor = display.get_primary_monitor()
-            geometry = monitor.get_geometry()
-            w = geometry.width
-            h = geometry.height
-            s = Gdk.Monitor.get_scale_factor(monitor)
+            if display:
+                monitor = display.get_primary_monitor() or (display.get_n_monitors() > 0 and display.get_monitor(0))
+                if monitor:
+                    geometry = monitor.get_geometry()
+                    w = geometry.width
+                    h = geometry.height
+                    s = Gdk.Monitor.get_scale_factor(monitor)
 
-            if w > 1920 or h > 1080:
-                width = int(w / 2.24)
-                height = int(h / 1.643)
-
+                    if w > 1920 or h > 1080:
+                        width = int(w / 2.24)
+                        height = int(h / 1.643)
         except Exception as e:
             print("Error in control_display: {}".format(e))
 
@@ -456,7 +462,7 @@ class MainWindow:
         self.ls_systemapps.append(list)
 
     def get_controlpanel_desktops(self):
-        blacklist = ["synaptic.desktop", "tr.org.pardus.mycomputer.desktop"]
+        blacklist = ["synaptic.desktop", "tr.org.pars.mycomputer.desktop"]
         apps = []
         for app in Gio.DesktopAppInfo.get_all():
 
@@ -564,7 +570,7 @@ class MainWindow:
             listbox = Gtk.ListBox.new()
             listbox.set_tooltip_text(loc["tip"])
             listbox.set_selection_mode(Gtk.SelectionMode.NONE)
-            listbox.get_style_context().add_class("pardus-mycomputer-listbox")
+            listbox.get_style_context().add_class("pars-mycomputer-listbox")
             listbox.connect("row-activated", self.on_place_clicked)
             listbox.add(box)
             for row in listbox:
@@ -621,7 +627,7 @@ class MainWindow:
             listbox = Gtk.ListBox.new()
             listbox.set_tooltip_text(dir["path"])
             listbox.set_selection_mode(Gtk.SelectionMode.NONE)
-            listbox.get_style_context().add_class("pardus-mycomputer-listbox")
+            listbox.get_style_context().add_class("pars-mycomputer-listbox")
             listbox.connect("row-activated", self.on_place_clicked)
             listbox.add(box)
             for row in listbox:
@@ -649,7 +655,7 @@ class MainWindow:
             listbox = Gtk.ListBox.new()
             listbox.set_selection_mode(Gtk.SelectionMode.NONE)
             listbox.set_tooltip_text(saved["path"])
-            listbox.get_style_context().add_class("pardus-mycomputer-listbox")
+            listbox.get_style_context().add_class("pars-mycomputer-listbox")
             listbox.connect("row-activated", self.on_place_clicked)
             listbox.connect("button-press-event", self.on_place_button_press_event)
             listbox.add(box)
@@ -667,7 +673,7 @@ class MainWindow:
         iconview.set_text_column(1)
         iconview.set_vexpand(True)
         iconview.set_vexpand_set(True)
-        iconview.get_style_context().add_class("pardus-mycomputer-iconview")
+        iconview.get_style_context().add_class("pars-mycomputer-iconview")
         iconview.enable_model_drag_dest([Gtk.TargetEntry.new('text/uri-list', 0, 0)],
                                         Gdk.DragAction.DEFAULT | Gdk.DragAction.COPY)
         iconview.connect("drag-data-received", self.drag_data_received)
@@ -689,7 +695,7 @@ class MainWindow:
 
             listbox = Gtk.ListBox.new()
             listbox.set_selection_mode(Gtk.SelectionMode.NONE)
-            listbox.get_style_context().add_class("pardus-mycomputer-listbox")
+            listbox.get_style_context().add_class("pars-mycomputer-listbox")
             listbox.connect("row-activated", self.on_place_add_activated)
             listbox.add(box)
             for row in listbox:
@@ -1006,7 +1012,7 @@ class MainWindow:
                 # if volume usage >= 0.9 then add destructive color
                 try:
                     if file_info["usage_percent"] >= 0.9:
-                        row_volume._pb_volume_size.get_style_context().add_class("pardus-mycomputer-progress-90")
+                        row_volume._pb_volume_size.get_style_context().add_class("pars-mycomputer-progress-90")
                 except Exception as e:
                     print("progress css exception: {}".format(e))
 
@@ -1305,7 +1311,7 @@ class MainWindow:
         # if root usage >= 0.9 then add destructive color
         try:
             if root_info["usage_percent"] >= 0.9:
-                self.pb_root_usage.get_style_context().add_class("pardus-mycomputer-progress-90")
+                self.pb_root_usage.get_style_context().add_class("pars-mycomputer-progress-90")
         except Exception as e:
             print("progress css exception: {}".format(e))
 
@@ -1327,7 +1333,7 @@ class MainWindow:
                 listbox = Gtk.ListBox.new()
                 listbox.set_selection_mode(Gtk.SelectionMode.NONE)
                 listbox.connect("row-activated", self.on_volume_row_activated)
-                listbox.get_style_context().add_class("pardus-mycomputer-listbox")
+                listbox.get_style_context().add_class("pars-mycomputer-listbox")
                 # frame.add(listbox)
 
                 # Add Volumes to the ListBox:
@@ -1359,7 +1365,7 @@ class MainWindow:
                 listbox = Gtk.ListBox.new()
                 listbox.set_selection_mode(Gtk.SelectionMode.NONE)
                 listbox.connect("row-activated", self.on_volume_row_activated)
-                listbox.get_style_context().add_class("pardus-mycomputer-listbox")
+                listbox.get_style_context().add_class("pars-mycomputer-listbox")
 
                 # Add Volumes to the ListBox:
                 for vl in dr.get_volumes():
@@ -1395,7 +1401,7 @@ class MainWindow:
                 listbox = Gtk.ListBox.new()
                 listbox.set_selection_mode(Gtk.SelectionMode.NONE)
                 listbox.connect("row-activated", self.on_volume_row_activated)
-                listbox.get_style_context().add_class("pardus-mycomputer-listbox")
+                listbox.get_style_context().add_class("pars-mycomputer-listbox")
 
                 try:
                     ejectable = volume.can_eject()
@@ -1432,7 +1438,7 @@ class MainWindow:
                     listbox = Gtk.ListBox.new()
                     listbox.set_selection_mode(Gtk.SelectionMode.NONE)
                     listbox.connect("row-activated", self.on_volume_row_activated)
-                    listbox.get_style_context().add_class("pardus-mycomputer-listbox")
+                    listbox.get_style_context().add_class("pars-mycomputer-listbox")
 
                     try:
                         ejectable = mount.can_eject()
@@ -1457,7 +1463,7 @@ class MainWindow:
                 listbox = Gtk.ListBox.new()
                 listbox.set_selection_mode(Gtk.SelectionMode.NONE)
                 listbox.connect("row-activated", self.on_volume_row_activated)
-                listbox.get_style_context().add_class("pardus-mycomputer-listbox")
+                listbox.get_style_context().add_class("pars-mycomputer-listbox")
 
                 # Add Volumes to the ListBox:
                 self.addVolumeRow(saved["uri"], listbox, True, False, main_type="saved", mount_uri=saved["uri"],
@@ -1616,14 +1622,26 @@ class MainWindow:
             # window.resize(self.UserSettings.default_window_width, self.UserSettings.default_window_height)
             self.control_display()
 
+    def open_path(self, path):
+        """Open a path with the configured file manager, falling back to xdg-open."""
+        fm = (self.UserSettings.config_file_manager or "").strip()
+        if fm and fm != "xdg-open":
+            try:
+                subprocess.Popen([fm, path])
+                return
+            except Exception as e:
+                print(f"open_path: could not launch '{fm}': {e}")
+        # Fallback: xdg-open
+        subprocess.Popen(["xdg-open", path])
+
     # SIGNALS:
     def on_lb_home_row_activated(self, listbox, row):
-        subprocess.run(["xdg-open", GLib.get_home_dir()])
+        self.open_path(GLib.get_home_dir())
         if self.UserSettings.config_closeapp_main:
             self.on_window_delete_event(self.window)
 
     def on_lb_root_row_activated(self, listbox, row):
-        subprocess.run(["xdg-open", "/"])
+        self.open_path("/")
         if self.UserSettings.config_closeapp_main:
             self.on_window_delete_event(self.window)
 
@@ -1640,7 +1658,7 @@ class MainWindow:
                 self.on_btn_mount_connect_clicked(button=None, from_saved=True, saved_uri=mount)
             else:
 
-                subprocess.Popen(["xdg-open", mount.get_root().get_path()])
+                self.open_path(mount.get_root().get_path())
 
     def on_btn_unmount_clicked(self, button):
         self.actioned_volume = button
@@ -1789,7 +1807,7 @@ class MainWindow:
                 self.on_btn_mount_connect_clicked(button=None, from_saved=True, saved_uri=mount)
             else:
 
-                subprocess.Popen(["xdg-open", mount.get_root().get_path()])
+                self.open_path(mount.get_root().get_path())
 
                 # some times phone's disk usage infos not showing on first mount,
                 # we can update this values on phone row clicked
@@ -1999,7 +2017,10 @@ class MainWindow:
         file_info = DiskManager.get_file_info(mount_point)
         self.popover_volume.popdown()
 
-        subprocess.Popen(["pardus-usb-formatter", file_info["device"]])
+        try:
+            subprocess.Popen(["pars-usb-formatter", file_info["device"]])
+        except Exception:
+            subprocess.Popen(["pardus-usb-formatter", file_info["device"]])
 
     def on_mount_added(self, volumemonitor, mount):
         self.addHardDisksToList()
@@ -2068,7 +2089,7 @@ class MainWindow:
             self.listbox_recent_servers.show_all()
             self.entry_addr.set_text("")
 
-        subprocess.run(["xdg-open", uri])
+        self.open_path(uri)
         if from_places:
             if self.UserSettings.config_closeapp_main:
                 self.window.get_application().quit()
@@ -2146,7 +2167,7 @@ class MainWindow:
                 else:
                     if from_places:
 
-                        subprocess.Popen(["xdg-open", saved_uri])
+                        self.open_path(saved_uri)
                         if self.UserSettings.config_closeapp_main:
                             self.on_window_delete_event(self.window)
                     else:
@@ -2417,9 +2438,12 @@ class MainWindow:
         desktop = self.get_current_desktop()
 
         try:
-            subprocess.Popen(["pardus-about"])
-        except Exception as e:
-            print("{}".format(e))
+            subprocess.Popen(["pars-about"])
+        except Exception:
+            try:
+                subprocess.Popen(["pardus-about"])
+            except Exception as e:
+                print("{}".format(e))
             if "xfce" in desktop:
                 try:
                     subprocess.Popen(["xfce4-about"])
@@ -2643,7 +2667,7 @@ class MainWindow:
         self.actioned_volume._volume.eject_with_operation(Gio.MountUnmountFlags.FORCE, self.mount_operation, None,
                                                           on_ejected)
 
-    def notify(self, message_summary="", message_body="", icon="pardus-mycomputer"):
+    def notify(self, message_summary="", message_body="", icon="pars-mycomputer"):
         try:
             if Notify.is_initted():
                 Notify.uninit()

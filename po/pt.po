@@ -1,6 +1,6 @@
-# Portuguese translation for pardus-mycomputer.
+# Portuguese translation for pars-mycomputer.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
-# This file is distributed under the same license as the pardus-mycomputer package.
+# This file is distributed under the same license as the pars-mycomputer package.
 # Hugo Carvalho <hugokarvalho@hotmail.com>, 2021, 2022, 2023, 2024, 2025, 2026.
 #
 msgid ""
@@ -32,8 +32,8 @@ msgid "Refresh"
 msgstr "Atualizar"
 
 #: ui/MainWindow.glade:259 src/MainWindow.py:346
-msgid "About Pardus"
-msgstr "Acerca do Pardus"
+msgid "About Pars"
+msgstr "Acerca do Pars"
 
 #: ui/MainWindow.glade:315
 msgid "About App"
@@ -313,12 +313,12 @@ msgid "My Computer"
 msgstr "Meu Computador"
 
 #: src/MainWindow.py:233
-msgid "Pardus My Computer"
-msgstr "Meu Computador Pardus"
+msgid "Pars My Computer"
+msgstr "Meu Computador Pars"
 
 #: src/MainWindow.py:237
-msgid "About Pardus My Computer"
-msgstr "Acerca do Meu Computador Pardus"
+msgid "About Pars My Computer"
+msgstr "Acerca do Meu Computador Pars"
 
 #: src/MainWindow.py:332
 msgid "Unknown (/etc/os-release syntax error)"

@@ -31,7 +31,7 @@ msgid "Refresh"
 msgstr ""
 
 #: ui/MainWindow.glade:259 src/MainWindow.py:346
-msgid "About Pardus"
+msgid "About Pars"
 msgstr ""
 
 #: ui/MainWindow.glade:315
@@ -310,11 +310,11 @@ msgid "My Computer"
 msgstr ""
 
 #: src/MainWindow.py:233
-msgid "Pardus My Computer"
+msgid "Pars My Computer"
 msgstr ""
 
 #: src/MainWindow.py:237
-msgid "About Pardus My Computer"
+msgid "About Pars My Computer"
 msgstr ""
 
 #: src/MainWindow.py:332

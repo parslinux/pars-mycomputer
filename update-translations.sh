@@ -1,6 +1,6 @@
 #!/bin/bash
 
-langs=("tr" "pt")
+langs=("tr" "pt" "fr")
 
 if ! command -v xgettext &> /dev/null
 then
@@ -11,14 +11,14 @@ fi
 
 
 echo "updating pot file"
-xgettext -o po/pardus-mycomputer.pot --files-from=po/files
+xgettext -o po/pars-mycomputer.pot --files-from=po/files
 
 for lang in ${langs[@]}; do
 	if [[ -f po/$lang.po ]]; then
 		echo "updating $lang.po"
-		msgmerge -o po/$lang.po po/$lang.po po/pardus-mycomputer.pot
+		msgmerge -o po/$lang.po po/$lang.po po/pars-mycomputer.pot
 	else
 		echo "creating $lang.po"
-		cp po/pardus-mycomputer.pot po/$lang.po
+		cp po/pars-mycomputer.pot po/$lang.po
 	fi
 done

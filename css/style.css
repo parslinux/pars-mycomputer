@@ -1,24 +1,75 @@
-.pardus-mycomputer-listbox{
-background-color:transparent;
-border-radius:8px;
-}
-.pardus-mycomputer-iconview{
-background-color:transparent;
-}
+/* Pars My Computer - Modern GTK 3 Theme */
 
-.pardus-mycomputer-listbox row:hover, row:selected{
-border-radius:8px;
+/* Main ListBox Container Styling */
+.pars-mycomputer-listbox {
+    background-color: transparent;
+    border-radius: 10px;
+    margin: 2px 4px;
+    transition: all 200ms cubic-bezier(0.25, 0.8, 0.25, 1);
 }
 
-.pardus-mycomputer-progress-90 progress{
+.pars-mycomputer-iconview {
+    background-color: transparent;
+    border-radius: 8px;
+}
 
-color: #eeeeec;
-border-color: rgba(0, 0, 0, 0.7);
-background-color: transparent;
-background-image: image(rgba(224, 27, 36, 0.9));
-background-clip: padding-box; box-shadow: inset 0 1px rgba(255, 255, 255, 0.1);
-text-shadow: 0 1px black;
--gtk-icon-shadow: 0 1px black;
-outline-color: rgba(238, 238, 236, 0.3);
+/* ListBox Rows Hover & Selection Effects */
+.pars-mycomputer-listbox row {
+    border-radius: 8px;
+    padding: 4px 8px;
+    margin: 2px 0px;
+    transition: background-color 150ms ease, transform 150ms ease;
+}
 
+.pars-mycomputer-listbox row:hover {
+    background-color: alpha(@theme_fg_color, 0.07);
+    border-radius: 8px;
+}
+
+.pars-mycomputer-listbox row:selected,
+.pars-mycomputer-listbox row:selected:hover {
+    background-color: alpha(@theme_selected_bg_color, 0.2);
+    color: @theme_selected_fg_color;
+    border-radius: 8px;
+}
+
+/* Base Progress Bar Styling */
+progressbar progress {
+    border-radius: 6px;
+    background-image: linear-gradient(to right, #3584e4, #1c71d8);
+    box-shadow: inset 0 1px rgba(255, 255, 255, 0.2), 0 1px 3px rgba(0, 0, 0, 0.2);
+    transition: all 300ms ease;
+}
+
+progressbar trough {
+    border-radius: 6px;
+    background-color: alpha(@theme_fg_color, 0.1);
+    border: none;
+    min-height: 8px;
+}
+
+/* Critical Disk Capacity (>=90% Usage) Warning Styling */
+.pars-mycomputer-progress-90 progress {
+    color: #ffffff;
+    border: 1px solid rgba(224, 27, 36, 0.6);
+    background-color: transparent;
+    background-image: linear-gradient(135deg, #e01b24 0%, #ff5555 50%, #c01c28 100%);
+    background-clip: padding-box;
+    box-shadow: inset 0 1px rgba(255, 255, 255, 0.3), 0 2px 8px rgba(224, 27, 36, 0.4);
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
+    -gtk-icon-shadow: 0 1px rgba(0, 0, 0, 0.5);
+    outline-color: rgba(255, 255, 255, 0.4);
+    border-radius: 6px;
+}
+
+/* Places Sidebar Item Enhancements */
+.pars-mycomputer-listbox label {
+    font-weight: 500;
+}
+
+/* Clean HeaderBar and Popover Tweaks */
+popover.background {
+    border-radius: 12px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
+    padding: 6px;
 }
