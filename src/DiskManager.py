@@ -13,24 +13,21 @@ except (ValueError, ImportError):
 
 
 def get_file_info(file, network=False):
+    if not file or not isinstance(file, str):
+        return None
+
     values = None
     command = ["df", file, "--block-size=1000", "-T"]
+    timeout = 1.0 if network else 1.5
 
-    if network:
-        try:
-            process = subprocess.check_output(command, timeout=1)
-        except subprocess.TimeoutExpired:
-            print("timeout error on {}".format(file))
-            return None
-        except subprocess.CalledProcessError:
-            print("CalledProcessError error on {}".format(file))
-            return None
-    else:
-        try:
-            process = subprocess.check_output(command)
-        except Exception as e:
-            print("get_file_info subprocess error: {}".format(file))
-            return None
+    try:
+        process = subprocess.check_output(command, timeout=timeout)
+    except subprocess.TimeoutExpired:
+        print("timeout error on {}".format(file))
+        return None
+    except (subprocess.CalledProcessError, Exception) as e:
+        print("get_file_info subprocess error: {}".format(file))
+        return None
 
     lines = process.decode().splitlines()
 
@@ -60,13 +57,16 @@ def get_file_info(file, network=False):
 
 
 def get_uuid_from_dev(dev_path):
-    result = subprocess.run(["lsblk", "-o", "PATH,UUID", "--raw"], capture_output=True, text=True)
-    if result.returncode != 0:
-        return ""
-    for line in result.stdout.splitlines():
-        parts = line.strip().split()
-        if len(parts) >= 2 and parts[0] == dev_path:
-            return parts[1]
+    try:
+        result = subprocess.run(["lsblk", "-o", "PATH,UUID", "--raw"], capture_output=True, text=True, timeout=1.5)
+        if result.returncode != 0:
+            return ""
+        for line in result.stdout.splitlines():
+            parts = line.strip().split()
+            if len(parts) >= 2 and parts[0] == dev_path:
+                return parts[1]
+    except Exception as e:
+        print(f"get_uuid_from_dev error: {e}")
     return ""
 
 
@@ -157,15 +157,16 @@ def set_automounted(dev_path, state):
         print(f"Error updating fstab: {e}")
 
 def get_filesystem_of_partition(partition_path):
-
-    result = subprocess.run(["lsblk", "-o", "TYPE,PATH,FSTYPE", "-r"], capture_output=True, text=True)
-    if result.returncode != 0:
-        return "-"
-    for line in result.stdout.splitlines():
-        parts = line.strip().split()
-        if len(parts) >= 3 and parts[1] == partition_path:
-            return parts[2]
-
+    try:
+        result = subprocess.run(["lsblk", "-o", "TYPE,PATH,FSTYPE", "-r"], capture_output=True, text=True, timeout=1.5)
+        if result.returncode != 0:
+            return "-"
+        for line in result.stdout.splitlines():
+            parts = line.strip().split()
+            if len(parts) >= 3 and parts[1] == partition_path:
+                return parts[2]
+    except Exception as e:
+        print(f"get_filesystem_of_partition error: {e}")
     return "-"
 
 # import subprocess, threading

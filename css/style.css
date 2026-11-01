@@ -73,3 +73,51 @@ popover.background {
     box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
     padding: 6px;
 }
+
+/* In-App File Browser Styling */
+#file_browser_container {
+    background-color: transparent;
+}
+
+#file_browser_toolbar {
+    padding: 4px 6px;
+    border-radius: 8px;
+    background-color: alpha(@theme_fg_color, 0.03);
+}
+
+#file_browser_toolbar button {
+    border-radius: 6px;
+    padding: 6px 10px;
+    transition: background-color 150ms ease;
+}
+
+#file_browser_toolbar button:hover {
+    background-color: alpha(@theme_fg_color, 0.08);
+}
+
+#file_browser_toolbar entry {
+    border-radius: 6px;
+    padding: 6px 10px;
+    border: 1px solid alpha(@theme_fg_color, 0.15);
+    background-color: alpha(@theme_bg_color, 0.8);
+}
+
+#file_browser_treeview {
+    background-color: transparent;
+}
+
+#file_browser_treeview:selected {
+    background-color: alpha(@theme_selected_bg_color, 0.25);
+    color: @theme_selected_fg_color;
+}
+
+#file_browser_treeview header button {
+    font-weight: 600;
+    padding: 6px 8px;
+}
+
+#file_browser_statusbar label {
+    font-size: 0.9em;
+    opacity: 0.75;
+}
+

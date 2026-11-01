@@ -1,16 +1,18 @@
 # Portuguese translation for pars-mycomputer.
-# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# Copyright (C) 2026 Pars Linux
 # This file is distributed under the same license as the pars-mycomputer package.
-# Hugo Carvalho <hugokarvalho@hotmail.com>, 2021, 2022, 2023, 2024, 2025, 2026.
+# Pars Linux Topluluğu, 2026.
+# GitHub: https://github.com/parslinux
+# Instagram: @parslinux
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: \n"
-"Report-Msgid-Bugs-To: \n"
+"Project-Id-Version: 1.0.0\n"
+"Report-Msgid-Bugs-To: https://github.com/parslinux\n"
 "POT-Creation-Date: 2026-01-15 15:56+0300\n"
 "PO-Revision-Date: 2026-01-23 12:07+0000\n"
-"Last-Translator: Hugo Carvalho <hugokarvalho@hotmail.com>\n"
-"Language-Team: \n"
+"Last-Translator: Pars Linux Topluluğu\n"
+"Language-Team: Pars Linux <https://github.com/parslinux>\n"
 "Language: pt\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -119,7 +121,7 @@ msgstr "Interface para informação e gestão de discos no seu computador."
 #. Name Surname <example@examplemail.com>
 #: ui/MainWindow.glade:1634
 msgid "translator-credits"
-msgstr "Hugo Carvalho <hugokarvalho@hotmail.com>"
+msgstr "Pars Linux Topluluğu\nGitHub: https://github.com/parslinux\nInstagram: @parslinux"
 
 #: ui/MainWindow.glade:1690
 msgid "Ok"

@@ -1626,13 +1626,15 @@
     <property name="transient-for">window</property>
     <property name="program-name">Pars My Computer</property>
     <property name="version">0.1.0</property>
-    <property name="copyright">© Pars Project Contributors</property>
+    <property name="copyright">© Pars Linux</property>
     <property name="comments" translatable="yes">UI for information and management of disks on your computer.</property>
-    <property name="website">https://github.com/pars-linux/pars-mycomputer</property>
-    <property name="authors">Emin Fedar &lt;emin.fedar@pars.org.tr&gt;
-Fatih Altun &lt;fatih.altun@pars.org.tr&gt;</property>
-    <property name="translator-credits" translatable="yes" comments="Name Surname &lt;example@examplemail.com&gt;">translator-credits</property>
-    <property name="artists">Yusuf Düzgün &lt;yusuf.duzgun@pars.org.tr&gt;</property>
+    <property name="website">https://github.com/parslinux</property>
+    <property name="website-label">GitHub: https://github.com/parslinux</property>
+    <property name="authors">Pars Linux Topluluğu
+GitHub: https://github.com/parslinux
+Instagram: @parslinux</property>
+    <property name="translator-credits" translatable="yes">translator-credits</property>
+    <property name="artists">Pars Linux Topluluğu</property>
     <property name="logo-icon-name">pars-mycomputer</property>
     <property name="license-type">gpl-3-0</property>
     <child internal-child="vbox">
@@ -2493,46 +2495,46 @@ Fatih Altun &lt;fatih.altun@pars.org.tr&gt;</property>
     <signal name="delete-event" handler="on_window_delete_event" swapped="no"/>
     <signal name="show" handler="on_window_show" swapped="no"/>
     <child>
-      <object class="GtkStack" id="stack_main">
+      <object class="GtkPaned" id="paned_main">
         <property name="visible">True</property>
-        <property name="can-focus">False</property>
-        <property name="transition-type">crossfade</property>
+        <property name="can-focus">True</property>
         <child>
-          <object class="GtkPaned">
+          <object class="GtkScrolledWindow" id="sw_places_container">
             <property name="visible">True</property>
             <property name="can-focus">True</property>
+            <property name="hscrollbar-policy">never</property>
+            <property name="vscrollbar-policy">automatic</property>
             <child>
-              <object class="GtkScrolledWindow">
+              <object class="GtkViewport">
                 <property name="visible">True</property>
-                <property name="can-focus">True</property>
-                <property name="hscrollbar-policy">never</property>
-                <property name="vscrollbar-policy">external</property>
+                <property name="can-focus">False</property>
+                <property name="shadow-type">none</property>
                 <child>
-                  <object class="GtkViewport">
+                  <object class="GtkBox" id="box_places">
                     <property name="visible">True</property>
                     <property name="can-focus">False</property>
-                    <property name="shadow-type">none</property>
+                    <property name="margin-start">8</property>
+                    <property name="margin-end">8</property>
+                    <property name="margin-top">13</property>
+                    <property name="orientation">vertical</property>
                     <child>
-                      <object class="GtkBox" id="box_places">
-                        <property name="visible">True</property>
-                        <property name="can-focus">False</property>
-                        <property name="margin-start">8</property>
-                        <property name="margin-end">8</property>
-                        <property name="margin-top">13</property>
-                        <property name="orientation">vertical</property>
-                        <child>
-                          <placeholder/>
-                        </child>
-                      </object>
+                      <placeholder/>
                     </child>
                   </object>
                 </child>
               </object>
-              <packing>
-                <property name="resize">False</property>
-                <property name="shrink">True</property>
-              </packing>
             </child>
+          </object>
+          <packing>
+            <property name="resize">False</property>
+            <property name="shrink">True</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkStack" id="stack_main">
+            <property name="visible">True</property>
+            <property name="can-focus">False</property>
+            <property name="transition-type">crossfade</property>
             <child>
               <object class="GtkBox" id="box_main">
                 <property name="visible">True</property>
@@ -3109,17 +3111,12 @@ Fatih Altun &lt;fatih.altun@pars.org.tr&gt;</property>
                 </child>
               </object>
               <packing>
-                <property name="resize">True</property>
-                <property name="shrink">True</property>
+                <property name="name">home</property>
+                <property name="position">0</property>
               </packing>
             </child>
-          </object>
-          <packing>
-            <property name="name">home</property>
-          </packing>
-        </child>
-        <child>
-          <object class="GtkBox" id="box_settings">
+            <child>
+              <object class="GtkBox" id="box_settings">
             <property name="visible">True</property>
             <property name="can-focus">False</property>
             <property name="margin-start">34</property>
@@ -3456,6 +3453,128 @@ Fatih Altun &lt;fatih.altun@pars.org.tr&gt;</property>
                     <property name="position">7</property>
                   </packing>
                 </child>
+                <child>
+                  <object class="GtkBox">
+                    <property name="visible">True</property>
+                    <property name="can-focus">False</property>
+                    <property name="spacing">13</property>
+                    <child>
+                      <object class="GtkLabel">
+                        <property name="visible">True</property>
+                        <property name="can-focus">False</property>
+                        <property name="halign">end</property>
+                        <property name="hexpand">True</property>
+                        <property name="label" translatable="yes">Open file manager after mount</property>
+                      </object>
+                      <packing>
+                        <property name="expand">False</property>
+                        <property name="fill">True</property>
+                        <property name="position">0</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkSwitch" id="sw_open_after_mount">
+                        <property name="visible">True</property>
+                        <property name="can-focus">True</property>
+                        <property name="halign">end</property>
+                        <property name="valign">center</property>
+                        <signal name="state-set" handler="on_sw_open_after_mount_state_set" swapped="no"/>
+                      </object>
+                      <packing>
+                        <property name="expand">False</property>
+                        <property name="fill">True</property>
+                        <property name="position">1</property>
+                      </packing>
+                    </child>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">True</property>
+                    <property name="position">8</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkBox">
+                    <property name="visible">True</property>
+                    <property name="can-focus">False</property>
+                    <property name="spacing">13</property>
+                    <child>
+                      <object class="GtkLabel">
+                        <property name="visible">True</property>
+                        <property name="can-focus">False</property>
+                        <property name="halign">end</property>
+                        <property name="hexpand">True</property>
+                        <property name="label" translatable="yes">File Manager command</property>
+                      </object>
+                      <packing>
+                        <property name="expand">False</property>
+                        <property name="fill">True</property>
+                        <property name="position">0</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkEntry" id="entry_file_manager">
+                        <property name="visible">True</property>
+                        <property name="can-focus">True</property>
+                        <property name="halign">end</property>
+                        <property name="valign">center</property>
+                        <property name="width-chars">16</property>
+                        <property name="placeholder-text">nautilus</property>
+                        <signal name="changed" handler="on_entry_file_manager_changed" swapped="no"/>
+                      </object>
+                      <packing>
+                        <property name="expand">False</property>
+                        <property name="fill">True</property>
+                        <property name="position">1</property>
+                      </packing>
+                    </child>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">True</property>
+                    <property name="position">9</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkBox">
+                    <property name="visible">True</property>
+                    <property name="can-focus">False</property>
+                    <property name="spacing">13</property>
+                    <child>
+                      <object class="GtkLabel">
+                        <property name="visible">True</property>
+                        <property name="can-focus">False</property>
+                        <property name="halign">end</property>
+                        <property name="hexpand">True</property>
+                        <property name="label" translatable="yes">Open folders in internal browser</property>
+                      </object>
+                      <packing>
+                        <property name="expand">False</property>
+                        <property name="fill">True</property>
+                        <property name="position">0</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkSwitch" id="sw_use_internal_browser">
+                        <property name="visible">True</property>
+                        <property name="can-focus">True</property>
+                        <property name="halign">end</property>
+                        <property name="valign">center</property>
+                        <signal name="state-set" handler="on_sw_use_internal_browser_state_set" swapped="no"/>
+                      </object>
+                      <packing>
+                        <property name="expand">False</property>
+                        <property name="fill">True</property>
+                        <property name="position">1</property>
+                      </packing>
+                    </child>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">True</property>
+                    <property name="position">10</property>
+                  </packing>
+                </child>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -3650,9 +3769,26 @@ Fatih Altun &lt;fatih.altun@pars.org.tr&gt;</property>
             <property name="position">2</property>
           </packing>
         </child>
+        <child>
+          <object class="GtkBox" id="box_filebrowser">
+            <property name="visible">True</property>
+            <property name="can-focus">False</property>
+            <property name="orientation">vertical</property>
+          </object>
+          <packing>
+            <property name="name">filebrowser</property>
+            <property name="position">3</property>
+          </packing>
+        </child>
       </object>
+      <packing>
+        <property name="resize">True</property>
+        <property name="shrink">True</property>
+      </packing>
     </child>
-    <child type="titlebar">
+  </object>
+</child>
+<child type="titlebar">
       <object class="GtkHeaderBar">
         <property name="visible">True</property>
         <property name="can-focus">False</property>

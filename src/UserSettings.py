@@ -15,17 +15,43 @@ from pathlib import Path
 
 from gi.repository import GLib
 
+import gettext
+
 # Translation Constants:
 APPNAME = "pars-mycomputer"
-TRANSLATIONS_PATH = "/usr/share/locale"
-# SYSTEM_LANGUAGE = os.environ.get("LANG")
+LOCAL_LOCALE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "po"))
+SYSTEM_LOCALE_DIR = "/usr/share/locale"
 
-# Translation functions:
+try:
+    locale.setlocale(locale.LC_ALL, "")
+except Exception:
+    try:
+        locale.setlocale(locale.LC_ALL, "tr_TR.UTF-8")
+    except Exception:
+        pass
+
+TRANSLATIONS_PATH = SYSTEM_LOCALE_DIR
+if not os.path.isfile(os.path.join(SYSTEM_LOCALE_DIR, "tr", "LC_MESSAGES", f"{APPNAME}.mo")):
+    if os.path.isdir(LOCAL_LOCALE_DIR):
+        TRANSLATIONS_PATH = LOCAL_LOCALE_DIR
+
 locale.bindtextdomain(APPNAME, TRANSLATIONS_PATH)
 locale.textdomain(APPNAME)
+try:
+    gettext.bindtextdomain(APPNAME, TRANSLATIONS_PATH)
+    gettext.textdomain(APPNAME)
+except Exception:
+    pass
 
-
-# locale.setlocale(locale.LC_ALL, SYSTEM_LANGUAGE)
+try:
+    _tr_cat = gettext.translation(APPNAME, localedir=TRANSLATIONS_PATH, languages=['tr'], fallback=True)
+    def _(msg):
+        res = locale.gettext(msg)
+        if (res == msg or not res) and _tr_cat:
+            res = _tr_cat.gettext(msg)
+        return res
+except Exception:
+    from locale import gettext as _
 
 class UserSettings(object):
     def __init__(self):
@@ -50,6 +76,8 @@ class UserSettings(object):
         self.config_hide_places = None
         self.config_hide_desktopicon = None
         self.config_file_manager = None
+        self.config_open_after_mount = None
+        self.config_use_internal_browser = None
 
         # window configs
         self.config_window_remember_size = None
@@ -67,6 +95,8 @@ class UserSettings(object):
         self.default_hide_places = False
         self.default_hide_desktopicon = False
         self.default_file_manager = "xdg-open"
+        self.default_open_after_mount = False
+        self.default_use_internal_browser = True
 
         # window defaults
         self.default_window_remember_size = False
@@ -84,7 +114,9 @@ class UserSettings(object):
             'AutoRefreshTime': self.default_autorefresh_time,
             'HidePlaces': self.default_hide_places,
             'HideDesktopIcon': self.default_hide_desktopicon,
-            'FileManager': self.default_file_manager
+            'FileManager': self.default_file_manager,
+            'OpenAfterMount': self.default_open_after_mount,
+            'UseInternalBrowser': self.default_use_internal_browser
         }
 
         self.config['WINDOW'] = {
@@ -114,6 +146,14 @@ class UserSettings(object):
                 self.config_file_manager = self.config.get('MAIN', 'FileManager')
             except Exception:
                 self.config_file_manager = self.default_file_manager
+            try:
+                self.config_open_after_mount = self.config.getboolean('MAIN', 'OpenAfterMount')
+            except Exception:
+                self.config_open_after_mount = self.default_open_after_mount
+            try:
+                self.config_use_internal_browser = self.config.getboolean('MAIN', 'UseInternalBrowser')
+            except Exception:
+                self.config_use_internal_browser = self.default_use_internal_browser
             self.config_window_remember_size = self.config.getboolean('WINDOW', 'RememberWindowSize')
             self.config_window_fullscreen = self.config.getboolean('WINDOW', 'FullScreen')
             self.config_window_width = self.config.getint('WINDOW', 'Width')
@@ -132,6 +172,8 @@ class UserSettings(object):
             self.config_hide_places = self.default_hide_places
             self.config_hide_desktopicon = self.default_hide_desktopicon
             self.config_file_manager = self.default_file_manager
+            self.config_open_after_mount = self.default_open_after_mount
+            self.config_use_internal_browser = self.default_use_internal_browser
             self.config_window_remember_size = self.default_window_remember_size
             self.config_window_fullscreen = self.default_window_fullscreen
             self.config_window_width = self.default_window_width
@@ -144,7 +186,7 @@ class UserSettings(object):
 
     def writeConfig(self, closeappmain="", closeapphdd="", closeappusb="", autorefresh="", autorefreshtime="",
                     hideplaces="", hidedesktopicon="", rememberwindowsize="", fullscreen="",
-                    width="", height="", usedarktheme="", filemanager=""):
+                    width="", height="", usedarktheme="", filemanager="", openaftermount="", useinternalbrowser=""):
         if closeappmain == "":
             closeappmain = self.config_closeapp_main
         if closeapphdd == "":
@@ -180,7 +222,9 @@ class UserSettings(object):
             'AutoRefreshTime': autorefreshtime,
             'HidePlaces': hideplaces,
             'HideDesktopIcon': hidedesktopicon,
-            'FileManager': filemanager
+            'FileManager': filemanager,
+            'OpenAfterMount': openaftermount if openaftermount != "" else (self.config_open_after_mount if self.config_open_after_mount is not None else self.default_open_after_mount),
+            'UseInternalBrowser': useinternalbrowser if useinternalbrowser != "" else (self.config_use_internal_browser if self.config_use_internal_browser is not None else self.default_use_internal_browser)
         }
 
         self.config['WINDOW'] = {

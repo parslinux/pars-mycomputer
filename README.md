@@ -25,27 +25,52 @@ Clone the repository
 git clone https://github.com/pars/pars-mycomputer.git ~/pars-mycomputer
 ```
 
-Run application
+### **Quick Start**
+
+Run application directly from source:
 ```bash
-python3 ~/pars-mycomputer/src/Main.py
+./run.sh
 ```
 
-### **Build deb package**
+### **Installation & Removal**
 
+Install system-wide:
 ```bash
-sudo apt install devscripts git-buildpackage
-sudo mk-build-deps -ir
-gbp buildpackage --git-export-dir=/tmp/build/pars-mycomputer -us -uc
+sudo ./install.sh
 ```
+
+Uninstall completely:
+```bash
+sudo ./uninstall.sh
+```
+
+### **Packaging**
+
+Build Arch Linux (`.pkg.tar.zst`), Debian (`.deb`), and source tarball (`.tar.gz`) packages into `dist/`:
+```bash
+./package.sh all
+```
+
+---
+
+### **Documentation & Project Resources**
+
+- **[Documentation Index](docs/README.md):** Complete guide to all project documentation
+- **[Installation Guide](docs/INSTALL.md):** Detailed step-by-step setup and packaging
+- **[Architecture & Design](docs/ARCHITECTURE.md):** Technical modular breakdown
+- **[Developer Guide](docs/DEVELOPMENT.md):** Contributor and development workflow
+- **[Progress Tracker](progress.md):** Feature progress and roadmap status
+- **[Claude AI Guide](claude.md):** Assistant guidelines and project instructions
+- **[Virtual Test Guide](docs/test_calistirmasi.md):** Loop device test procedures
 
 ### **Screenshots**
 
-![Pars My Computer 1](screenshots/pardus-mycomputer-1.png)
+![Pars My Computer 1 - Overview](screenshots/pars-mycomputer-1.png)
 
-![Pars My Computer 2](screenshots/pardus-mycomputer-2.png)
+![Pars My Computer 2 - File Browser](screenshots/pars-mycomputer-2.png)
 
-![Pars My Computer 3](screenshots/pardus-mycomputer-3.png)
+![Pars My Computer 3 - Settings](screenshots/pars-mycomputer-3.png)
 
-![Pars My Computer 4](screenshots/pardus-mycomputer-4.png)
+![Pars My Computer 4 - Dark Theme Overview](screenshots/pars-mycomputer-4.png)
 
-![Pars My Computer 5](screenshots/pardus-mycomputer-5.png)
+![Pars My Computer 5 - Dark Theme File Browser](screenshots/pars-mycomputer-5.png)

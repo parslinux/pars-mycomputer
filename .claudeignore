@@ -1,0 +1,48 @@
+# Git
+.git/
+
+# Python Cache & Bytecode
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+
+# Build & Packaging
+build/
+dist/
+pkg/
+*.pkg.tar.zst
+*.pkg.tar.xz
+*.deb
+*.egg-info/
+.eggs/
+eggs/
+parts/
+sdist/
+var/
+wheels/
+*.egg
+
+# Virtual Environments
+venv/
+.venv/
+env/
+.env/
+
+# IDE & Editor Settings
+.idea/
+.vscode/
+.gemini/
+*.swp
+*.swo
+*~
+
+# Translation binaries
+po/*/*.mo
+*.mo
+
+# Test & Virtual disk images
+*.img
+*.iso
+/tmp/pars_test_disk.img

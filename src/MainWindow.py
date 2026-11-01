@@ -1,6 +1,7 @@
 import json
 import os
 import subprocess
+import time
 import urllib.parse
 from pathlib import Path
 
@@ -13,21 +14,49 @@ from gi.repository import GLib, Gio, Gtk, Notify, Gdk, Pango, GdkPixbuf
 import DiskManager
 
 from UserSettings import UserSettings
+from FileBrowserView import FileBrowserView
 
 import locale
-from locale import gettext as _
+import gettext
 
 # Translation Constants:
 APPNAME = "pars-mycomputer"
-TRANSLATIONS_PATH = "/usr/share/locale"
-# SYSTEM_LANGUAGE = os.environ.get("LANG")
+LOCAL_LOCALE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "po"))
+SYSTEM_LOCALE_DIR = "/usr/share/locale"
 
-# Translation functions:
+# 1. Set locale
+try:
+    locale.setlocale(locale.LC_ALL, "")
+except Exception:
+    try:
+        locale.setlocale(locale.LC_ALL, "tr_TR.UTF-8")
+    except Exception:
+        pass
+
+# 2. Determine translation path (prefer local po if running uninstalled)
+TRANSLATIONS_PATH = SYSTEM_LOCALE_DIR
+if not os.path.isfile(os.path.join(SYSTEM_LOCALE_DIR, "tr", "LC_MESSAGES", f"{APPNAME}.mo")):
+    if os.path.isdir(LOCAL_LOCALE_DIR):
+        TRANSLATIONS_PATH = LOCAL_LOCALE_DIR
+
 locale.bindtextdomain(APPNAME, TRANSLATIONS_PATH)
 locale.textdomain(APPNAME)
+try:
+    gettext.bindtextdomain(APPNAME, TRANSLATIONS_PATH)
+    gettext.textdomain(APPNAME)
+except Exception:
+    pass
 
-
-# locale.setlocale(locale.LC_ALL, SYSTEM_LANGUAGE)
+# 3. Direct Turkish translation fallback
+try:
+    _tr_cat = gettext.translation(APPNAME, localedir=TRANSLATIONS_PATH, languages=['tr'], fallback=True)
+    def _(msg):
+        res = locale.gettext(msg)
+        if (res == msg or not res) and _tr_cat:
+            res = _tr_cat.gettext(msg)
+        return res
+except Exception:
+    from locale import gettext as _
 
 
 class MainWindow:
@@ -103,6 +132,8 @@ class MainWindow:
             return self.builder.get_object(str)
 
         # places
+        self.paned_main = UI("paned_main")
+        self.sw_places_container = UI("sw_places_container")
         self.box_places = UI("box_places")
         self.popover_place_add = UI("popover_place_add")
         self.popover_place_remove = UI("popover_place_remove")
@@ -195,13 +226,26 @@ class MainWindow:
         self.sw_remember_window_size = UI("sw_remember_window_size")
         self.sw_use_dark_theme = UI("sw_use_dark_theme")
         self.sw_hide_desktopicon = UI("sw_hide_desktopicon")
+        self.sw_open_after_mount = UI("sw_open_after_mount")
+        self.entry_file_manager = UI("entry_file_manager")
+        self.sw_use_internal_browser = UI("sw_use_internal_browser")
+
+        # In-App File Browser
+        self.box_filebrowser = UI("box_filebrowser")
+        self.file_browser = FileBrowserView(
+            on_home_callback=self.on_btn_homepage_clicked,
+            on_open_external_callback=self.open_path_external
+        )
+        self.box_filebrowser.pack_start(self.file_browser, True, True, 0)
 
         self.img_menu_appsettings = UI("img_menu_appsettings")
         self.lbl_menu_appsettings = UI("lbl_menu_appsettings")
 
         # Mount dialog and popovers
         self.dialog_mount = UI("dialog_mount")
+        self.dialog_mount.set_transient_for(self.window)
         self.dialog_mount_error = UI("dialog_mount_error")
+        self.dialog_mount_error.set_transient_for(self.window)
         self.lbl_mount_message = UI("lbl_mount_message")
         self.entry_mount_username = UI("entry_mount_username")
         self.entry_mount_password = UI("entry_mount_password")
@@ -230,6 +274,7 @@ class MainWindow:
 
         # About dialog
         self.dialog_about = UI("dialog_about")
+        self.dialog_about.set_transient_for(self.window)
         self.dialog_about.set_program_name(_("Pars My Computer"))
         if self.dialog_about.get_titlebar() is None:
             about_headerbar = Gtk.HeaderBar.new()
@@ -256,8 +301,9 @@ class MainWindow:
         self.mount_paths = []
         self.net_mounts = []
         self.place_remove_name = None
-        # self.selected_mount_uri = ""
-        # self.selected_mount_name = ""
+        self.du_in_progress = False
+        self.cached_home_size_kb = 0
+        self.last_home_size_time = 0
 
         # VolumeMonitor
         self.vm = Gio.VolumeMonitor.get()
@@ -311,6 +357,9 @@ class MainWindow:
             print("{} {}".format("config_window_width", self.UserSettings.config_window_width))
             print("{} {}".format("config_window_height", self.UserSettings.config_window_height))
         print("{} {}".format("config_window_use_darktheme", self.UserSettings.config_window_use_darktheme))
+        print("{} {}".format("config_open_after_mount", self.UserSettings.config_open_after_mount))
+        print("{} {}".format("config_file_manager", self.UserSettings.config_file_manager))
+        print("{} {}".format("config_use_internal_browser", self.UserSettings.config_use_internal_browser))
 
     def set_os_label_img(self):
         os_name = ""
@@ -385,16 +434,25 @@ class MainWindow:
         try:
             display = Gdk.Display.get_default()
             if display:
-                monitor = display.get_primary_monitor() or (display.get_n_monitors() > 0 and display.get_monitor(0))
+                window_gdk = self.window.get_window() if hasattr(self, "window") and self.window else None
+                monitor = None
+                if window_gdk:
+                    monitor = display.get_monitor_at_window(window_gdk)
+                if not monitor:
+                    monitor = display.get_primary_monitor()
+                if not monitor and display.get_n_monitors() > 0:
+                    monitor = display.get_monitor(0)
+
                 if monitor:
                     geometry = monitor.get_geometry()
-                    w = geometry.width
-                    h = geometry.height
-                    s = Gdk.Monitor.get_scale_factor(monitor)
+                    if geometry:
+                        w = geometry.width
+                        h = geometry.height
+                        s = Gdk.Monitor.get_scale_factor(monitor)
 
-                    if w > 1920 or h > 1080:
-                        width = int(w / 2.24)
-                        height = int(h / 1.643)
+                        if w > 1920 or h > 1080:
+                            width = int(w / 2.24)
+                            height = int(h / 1.643)
         except Exception as e:
             print("Error in control_display: {}".format(e))
 
@@ -714,15 +772,33 @@ class MainWindow:
         self.popover_place_edit.set_visible(False)
 
     def control_places_show(self, displaycontrol=False):
-        self.box_places.set_visible(not self.UserSettings.config_hide_places)
+        visible = not self.UserSettings.config_hide_places
+        self.box_places.set_visible(visible)
+        if hasattr(self, "sw_places_container") and self.sw_places_container:
+            self.sw_places_container.set_visible(visible)
         if displaycontrol:
             self.control_display()
 
     def on_place_clicked(self, listbox, row):
         path = row.get_child().name["path"]
+        if path == "computer:///":
+            self.on_btn_homepage_clicked()
+            return
         if path == "trash:///":
             # update file count of trash
             self.set_places()
+            self.open_path("trash:///")
+            return
+        if path == "recent:///":
+            self.open_path("recent:///")
+            return
+
+        if os.path.exists(path) or str(path).startswith("/") or str(path).startswith("file://"):
+            if str(path).startswith("file://"):
+                path = urllib.parse.unquote(path[7:])
+            self.open_path(path)
+            return
+
         self.on_btn_mount_connect_clicked(button=None, from_saved=True, saved_uri=path, from_places=True)
 
     def on_place_button_press_event(self, widget, event):
@@ -984,9 +1060,11 @@ class MainWindow:
 
         if gm != None and not isinstance(vl, str):
 
-            mount_point = gm.get_root().get_path()
-            file_info = DiskManager.get_file_info(mount_point,
-                                                  network=True if row_volume._main_type == "network" else False)
+            mount_point = gm.get_root().get_path() or gm.get_root().get_uri() or ""
+            file_info = None
+            if mount_point.startswith("/"):
+                file_info = DiskManager.get_file_info(mount_point,
+                                                      network=True if row_volume._main_type == "network" else False)
 
             if row_volume._main_type == "network":
                 display_name = vl.get_name()
@@ -1015,6 +1093,10 @@ class MainWindow:
                         row_volume._pb_volume_size.get_style_context().add_class("pars-mycomputer-progress-90")
                 except Exception as e:
                     print("progress css exception: {}".format(e))
+            else:
+                row_volume._lbl_volume_name.set_markup(
+                    f'<b>{GLib.markup_escape_text(display_name, -1)}</b>'
+                    f'<span size="small">( {GLib.markup_escape_text(mount_point, -1)} )</span>')
 
             if row_volume._stack_mount.get_child_by_name("unmount"):
                 row_volume._stack_mount.get_child_by_name("unmount").show()
@@ -1041,6 +1123,14 @@ class MainWindow:
                 try:
                     vl.mount_finish(task)
                     self.showVolumeSizes(row_volume)
+                    if self.UserSettings.config_open_after_mount:
+                        try:
+                            mount = vl.get_mount()
+                            if mount:
+                                path = mount.get_root().get_path()
+                                self.open_path(path)
+                        except Exception as e:
+                            print(f"Error opening after mount: {e}")
                     return True
                 except GLib.Error:
                     return False
@@ -1278,19 +1368,36 @@ class MainWindow:
         self.showVolumeSizes(row)
 
     def get_home_directory_size_async(self, path, callback):
-        proc = Gio.Subprocess.new(
-            ["du", "--block-size=1000", "-s", path],
-            Gio.SubprocessFlags.STDOUT_PIPE |
-            Gio.SubprocessFlags.STDERR_SILENCE
-        )
-        proc.communicate_utf8_async(None, None, self._on_du_finished, callback)
+        now = time.time()
+        if self.cached_home_size_kb > 0 and (now - self.last_home_size_time) < 60:
+            callback(self.cached_home_size_kb)
+            return
+
+        if self.du_in_progress:
+            return
+
+        self.du_in_progress = True
+        try:
+            proc = Gio.Subprocess.new(
+                ["du", "--block-size=1000", "-s", path],
+                Gio.SubprocessFlags.STDOUT_PIPE |
+                Gio.SubprocessFlags.STDERR_SILENCE
+            )
+            proc.communicate_utf8_async(None, None, self._on_du_finished, callback)
+        except Exception as e:
+            self.du_in_progress = False
+            print("get_home_directory_size_async error: {}".format(e))
 
     def _on_du_finished(self, proc, result, callback):
+        self.du_in_progress = False
         try:
             success, stdout, stderr = proc.communicate_utf8_finish(result)
             size = int(stdout.split()[0]) if success and stdout else 0
+            if size > 0:
+                self.cached_home_size_kb = size
+                self.last_home_size_time = time.time()
         except Exception:
-            size = 0
+            size = self.cached_home_size_kb
         callback(size)
 
     def get_home_directory_size(self, size_kb):
@@ -1622,28 +1729,43 @@ class MainWindow:
             # window.resize(self.UserSettings.default_window_width, self.UserSettings.default_window_height)
             self.control_display()
 
-    def open_path(self, path):
-        """Open a path with the configured file manager, falling back to xdg-open."""
+    def open_path_external(self, path):
+        """Open a path with the configured external file manager, falling back to xdg-open."""
         fm = (self.UserSettings.config_file_manager or "").strip()
         if fm and fm != "xdg-open":
             try:
                 subprocess.Popen([fm, path])
                 return
             except Exception as e:
-                print(f"open_path: could not launch '{fm}': {e}")
+                print(f"open_path_external: could not launch '{fm}': {e}")
         # Fallback: xdg-open
-        subprocess.Popen(["xdg-open", path])
+        try:
+            subprocess.Popen(["xdg-open", path])
+        except Exception as e:
+            print(f"open_path_external fallback: {e}")
+
+    def open_path(self, path):
+        """Open a path in internal file browser or external file manager depending on setting."""
+        if getattr(self.UserSettings, "config_use_internal_browser", True):
+            self.file_browser.load_directory(path)
+            self.stack_main.set_visible_child_name("filebrowser")
+            self.btn_search.set_visible(False)
+            return
+
+        self.open_path_external(path)
 
     # SIGNALS:
     def on_lb_home_row_activated(self, listbox, row):
         self.open_path(GLib.get_home_dir())
-        if self.UserSettings.config_closeapp_main:
-            self.on_window_delete_event(self.window)
+        if not getattr(self.UserSettings, "config_use_internal_browser", True):
+            if self.UserSettings.config_closeapp_main:
+                self.on_window_delete_event(self.window)
 
     def on_lb_root_row_activated(self, listbox, row):
         self.open_path("/")
-        if self.UserSettings.config_closeapp_main:
-            self.on_window_delete_event(self.window)
+        if not getattr(self.UserSettings, "config_use_internal_browser", True):
+            if self.UserSettings.config_closeapp_main:
+                self.on_window_delete_event(self.window)
 
     def on_btn_mount_clicked(self, button):
         try:
@@ -1657,8 +1779,9 @@ class MainWindow:
             if isinstance(mount, str):
                 self.on_btn_mount_connect_clicked(button=None, from_saved=True, saved_uri=mount)
             else:
-
-                self.open_path(mount.get_root().get_path())
+                path = mount.get_root().get_path() or mount.get_root().get_uri()
+                if path:
+                    self.open_path(path)
 
     def on_btn_unmount_clicked(self, button):
         self.actioned_volume = button
@@ -1806,8 +1929,9 @@ class MainWindow:
             if isinstance(mount, str):
                 self.on_btn_mount_connect_clicked(button=None, from_saved=True, saved_uri=mount)
             else:
-
-                self.open_path(mount.get_root().get_path())
+                path = mount.get_root().get_path() or mount.get_root().get_uri()
+                if path:
+                    self.open_path(path)
 
                 # some times phone's disk usage infos not showing on first mount,
                 # we can update this values on phone row clicked
@@ -1815,7 +1939,7 @@ class MainWindow:
                 if row._type == "phone":
                     self.showVolumeSizes(row)
 
-            if not isinstance(row._volume, str):
+            if not isinstance(row._volume, str) and not getattr(self.UserSettings, "config_use_internal_browser", True):
                 if row._volume.get_drive():
                     if row._volume.get_drive().is_removable():
                         if self.UserSettings.config_closeapp_usb:
@@ -2003,6 +2127,39 @@ class MainWindow:
                 print("{}".format(e))
         self.control_defaults()
 
+    def on_sw_open_after_mount_state_set(self, switch, state):
+        user_config_open_after_mount = self.UserSettings.config_open_after_mount
+        if state != user_config_open_after_mount:
+            print("Updating open after mount state")
+            try:
+                self.UserSettings.writeConfig(openaftermount=state)
+                self.user_settings()
+            except Exception as e:
+                print("{}".format(e))
+        self.control_defaults()
+
+    def on_entry_file_manager_changed(self, entry):
+        val = entry.get_text().strip()
+        user_config_file_manager = (self.UserSettings.config_file_manager or "").strip()
+        if val != user_config_file_manager:
+            try:
+                self.UserSettings.writeConfig(filemanager=val if val else self.UserSettings.default_file_manager)
+                self.user_settings()
+            except Exception as e:
+                print("{}".format(e))
+        self.control_defaults()
+
+    def on_sw_use_internal_browser_state_set(self, switch, state):
+        user_config_use_internal = self.UserSettings.config_use_internal_browser
+        if state != user_config_use_internal:
+            print("Updating use internal browser state")
+            try:
+                self.UserSettings.writeConfig(useinternalbrowser=state)
+                self.user_settings()
+            except Exception as e:
+                print("{}".format(e))
+        self.control_defaults()
+
     # Popover Menu Buttons:
     def on_button_mount_on_startup_clicked(self, button):
         DiskManager.set_automounted(button._device, button.get_active())
@@ -2023,18 +2180,16 @@ class MainWindow:
             subprocess.Popen(["pardus-usb-formatter", file_info["device"]])
 
     def on_mount_added(self, volumemonitor, mount):
-        self.addHardDisksToList()
-        self.addRemovableDevicesToList()
-        self.mount_paths.clear()
-        self.net_mounts.clear()
-        # print("on_mount_added")
+        GLib.idle_add(self.refresh_all_devices)
 
     def on_mount_removed(self, volumemonitor, mount):
-        GLib.idle_add(self.addHardDisksToList)
-        GLib.idle_add(self.addRemovableDevicesToList)
-        GLib.idle_add(self.mount_paths.clear)
-        GLib.idle_add(self.net_mounts.clear)
-        # print("on_mount_removed")
+        GLib.idle_add(self.refresh_all_devices)
+
+    def refresh_all_devices(self):
+        self.mount_paths.clear()
+        self.net_mounts.clear()
+        self.addHardDisksToList()
+        self.addRemovableDevicesToList()
 
     def on_btn_save_othermount_clicked(self, button):
         uri = button._volume.get_root().get_uri().strip()
@@ -2090,12 +2245,13 @@ class MainWindow:
             self.entry_addr.set_text("")
 
         self.open_path(uri)
-        if from_places:
-            if self.UserSettings.config_closeapp_main:
-                self.window.get_application().quit()
-        else:
-            if self.UserSettings.config_closeapp_usb:
-                self.window.get_application().quit()
+        if not getattr(self.UserSettings, "config_use_internal_browser", True):
+            if from_places:
+                if self.UserSettings.config_closeapp_main:
+                    self.window.get_application().quit()
+            else:
+                if self.UserSettings.config_closeapp_usb:
+                    self.window.get_application().quit()
 
     def add_to_recent_listbox(self, uri, name):
         label = Gtk.Label.new()
@@ -2168,8 +2324,9 @@ class MainWindow:
                     if from_places:
 
                         self.open_path(saved_uri)
-                        if self.UserSettings.config_closeapp_main:
-                            self.on_window_delete_event(self.window)
+                        if not getattr(self.UserSettings, "config_use_internal_browser", True):
+                            if self.UserSettings.config_closeapp_main:
+                                self.on_window_delete_event(self.window)
                     else:
                         self.dialog_mount_error.set_markup("<big><b>{}</b></big>".format(_("Error")))
                         self.dialog_mount_error.format_secondary_markup("{}".format(_(err.message)))
@@ -2354,6 +2511,9 @@ class MainWindow:
         self.sw_autorefresh.set_state(self.UserSettings.config_autorefresh)
         self.sw_remember_window_size.set_state(self.UserSettings.config_window_remember_size)
         self.sw_use_dark_theme.set_state(self.UserSettings.config_window_use_darktheme)
+        self.sw_open_after_mount.set_state(self.UserSettings.config_open_after_mount)
+        self.entry_file_manager.set_text(self.UserSettings.config_file_manager or "")
+        self.sw_use_internal_browser.set_state(self.UserSettings.config_use_internal_browser)
 
         if self.autorefresh_glibid:
             GLib.source_remove(self.autorefresh_glibid)
@@ -2373,12 +2533,15 @@ class MainWindow:
                 self.UserSettings.config_hide_places != self.UserSettings.default_hide_places or \
                 self.UserSettings.config_hide_desktopicon != self.UserSettings.default_hide_desktopicon or \
                 self.UserSettings.config_window_remember_size != self.UserSettings.default_window_remember_size or \
-                self.UserSettings.config_window_use_darktheme != self.UserSettings.default_window_use_darktheme:
+                self.UserSettings.config_window_use_darktheme != self.UserSettings.default_window_use_darktheme or \
+                self.UserSettings.config_open_after_mount != self.UserSettings.default_open_after_mount or \
+                self.UserSettings.config_use_internal_browser != self.UserSettings.default_use_internal_browser or \
+                (self.UserSettings.config_file_manager or "") != self.UserSettings.default_file_manager:
             self.btn_defaults.set_sensitive(True)
         else:
             self.btn_defaults.set_sensitive(False)
 
-    def on_btn_homepage_clicked(self, button):
+    def on_btn_homepage_clicked(self, button=None):
         self.btn_search.set_visible(False)
         self.stack_main.set_visible_child_name("home")
         self.img_menu_appsettings.set_from_icon_name("preferences-system-symbolic", Gtk.IconSize.BUTTON)
@@ -2401,6 +2564,9 @@ class MainWindow:
             self.sw_autorefresh.set_state(self.UserSettings.config_autorefresh)
             self.sw_remember_window_size.set_state(self.UserSettings.config_window_remember_size)
             self.sw_use_dark_theme.set_state(self.UserSettings.config_window_use_darktheme)
+            self.sw_open_after_mount.set_state(self.UserSettings.config_open_after_mount)
+            self.entry_file_manager.set_text(self.UserSettings.config_file_manager or "")
+            self.sw_use_internal_browser.set_state(self.UserSettings.config_use_internal_browser)
             self.stack_main.set_visible_child_name("settings")
             self.img_menu_appsettings.set_from_icon_name("user-home-symbolic", Gtk.IconSize.BUTTON)
             self.lbl_menu_appsettings.set_text(_("Home Page"))
@@ -2669,11 +2835,10 @@ class MainWindow:
 
     def notify(self, message_summary="", message_body="", icon="pars-mycomputer"):
         try:
-            if Notify.is_initted():
-                Notify.uninit()
+            if not Notify.is_initted():
+                Notify.init("pars-mycomputer")
 
-            Notify.init(message_summary)
             notification = Notify.Notification.new(message_summary, message_body, icon)
             notification.show()
         except Exception as e:
-            print("{}".format(e))
+            print(f"Notification error: {e}")

@@ -46,6 +46,7 @@ data_files = [
                      "src/FstabWriter.py",
                      "src/Unmount.py",
                      "src/UserSettings.py",
+                     "src/FileBrowserView.py",
                      "src/__version__"
                  ]),
                  ("/usr/share/pars/pars-mycomputer/ui",
@@ -73,10 +74,10 @@ setup(
     scripts=["pars-mycomputer"],
     install_requires=["PyGObject"],
     data_files=data_files,
-    author="Pars Altyapı",
-    author_email="dev@pars.org.tr",
+    author="Pars Linux",
+    author_email="parslinux@proton.me",
     description="My Computer, UI for information and management of disks on your computer.",
     license="GPLv3",
-    keywords="",
-    url="https://www.pars.org.tr",
+    keywords="pars, linux, disk, computer",
+    url="https://github.com/parslinux",
 )
